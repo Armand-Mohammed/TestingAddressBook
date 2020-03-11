@@ -25,6 +25,19 @@ class AddressBookControllerTest {
 
     @Test
     void set() {
+        //Act
+        addressBookController.add(instance);
+        addressBookController.add(instanceNumTwo);
+        assertEquals(instance, addressBookController.get(0));
+        assertEquals(instanceNumTwo, addressBookController.get(1));
+
+        addressBookController.set(1,instance);
+        addressBookController.set(0,instanceNumTwo);
+
+        //Assert
+        assertEquals(instanceNumTwo,addressBookController.get(0));
+        assertEquals(instance, addressBookController.get(1));
+
     }
 
     @Test
