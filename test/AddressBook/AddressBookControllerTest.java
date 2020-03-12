@@ -1,6 +1,11 @@
 package AddressBook;
 
+import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.rules.ExpectedException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +22,6 @@ class AddressBookControllerTest {
     void add() {
         //Act
         addressBookController.add(instance);
-
 
         //Assert
         assertEquals(instance, addressBookController.get(0));
@@ -48,8 +52,8 @@ class AddressBookControllerTest {
         addressBookController.remove(0);
 
         //Assert
+        assertEquals(addressBook.getRowCount(), 0);
         assertNotEquals(instance, null);
-
     }
 
     @Test
@@ -78,8 +82,21 @@ class AddressBookControllerTest {
         assertEquals(addressBook.getRowCount(), 0);
     }
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none(); // has to be public
+
+
+    //NOT COMPLETE 
     @Test
     void open() {
+        File file = new File("Address Book");
+        exception.expect(FileNotFoundException.class);
+        exception.expectMessage("File was not found");
+        boolean canRead = file.canRead();
+        assertTrue(canRead);
+        //addressBookController.open(file);
+       // InputStream is = this.getClass().getResourceAsStream("Address Book");
+       // assertNull(is);
     }
 
     @Test
