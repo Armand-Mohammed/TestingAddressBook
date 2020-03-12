@@ -21,14 +21,14 @@ class AddressBookTest {
     @Test
     void remove() {
         // Arrange
-        Person expectedPerson = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
+        Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
+        String expectedResult = "";
 
         // Act
         addressBook.add(instance);
         addressBook.remove(0);
 
-        // Assert
-        assertEquals(expectedPerson, instance);
+        assertEquals(expectedResult, addressBook.getPersons());
     }
 
     @Test
