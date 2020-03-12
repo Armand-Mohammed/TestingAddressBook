@@ -28,7 +28,7 @@ class AddressBookTest {
         addressBook.add(instance);
         addressBook.remove(0);
 
-        assertEquals(expectedResult, addressBook.getPersons());
+        assertEquals(addressBook.getRowCount(), 0);
     }
 
     @Test
