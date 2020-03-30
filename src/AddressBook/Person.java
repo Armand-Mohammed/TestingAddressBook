@@ -4,24 +4,9 @@ import java.util.regex.Pattern;
 
 public class Person {
 
-    public static final String[] fields =
-            {
-                    "Last Name",
-                    "First Name",
-                    "Address",
-                    "City",
-                    "State",
-                    "ZIP",
-                    "Phone",
-            };
+    public static final String[] fields = {"Last Name", "First Name", "Address", "City", "State", "ZIP", "Phone",};
 
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String city;
-    private String state;
-    private String zip;
-    private String phone;
+    private String firstName, lastName, address, city, state, zip, phone;
 
     public boolean isLetters(String name) {
         return name.matches("[a-zA-Z]+");
@@ -31,35 +16,47 @@ public class Person {
         return name.matches("^[0-9]*$");
     }
 
-    public Person(String firstName, String lastName, String address, String city, String state, String zip, String phone) {
+    public Person(String firstName, String lastName, String address, String city, String state, String zip, String phone)throws IllegalArgumentException {
 
             if (firstName == null || firstName.isEmpty())
                 throw new IllegalArgumentException("First name cannot be empty");
 
-            if (!isLetters(firstName)) throw new IllegalArgumentException("Please, only use letters");
+            if (!isLetters(firstName))
+                throw new IllegalArgumentException("Please, only use letters");
 
             if (lastName == null || lastName.isEmpty())
                 throw new IllegalArgumentException("Last name cannot be empty");
 
-            if (!isLetters(lastName)) throw new IllegalArgumentException("Please, only use letters");
+            if (!isLetters(lastName))
+                throw new IllegalArgumentException("Please, only use letters");
 
-            if (!isNumbers(zip)) throw new IllegalArgumentException("Please, only use numbers");
+            if (!isNumbers(zip))
+                throw new IllegalArgumentException("Please, only use numbers");
 
-            if (!isNumbers(phone)) throw new IllegalArgumentException("Please, only use numbers");
+            if (!isNumbers(phone))
+                throw new IllegalArgumentException("Please, only use numbers");
 
             if (address == null || address.isEmpty())
                 throw new IllegalArgumentException("Address cannot be empty");
 
-            if (city == null || city.isEmpty())
+            if (city == null)
+                throw new NullPointerException("City can't be null");
+            if(city.isEmpty())
                 throw new IllegalArgumentException("City cannot be empty");
 
-            if (state == null || state.isEmpty())
+            if (state == null)
+                throw new NullPointerException("State can't be null") ;
+            if(state.isEmpty())
                 throw new IllegalArgumentException("State cannot be empty");
 
-            if (zip == null || zip.isEmpty())
+            if (zip == null)
+                throw new NullPointerException("Zip can't be null");
+            if(zip.isEmpty())
                 throw new IllegalArgumentException("Zip cannot be empty");
 
-            if (phone == null || phone.isEmpty())
+            if (phone == null)
+                throw new NullPointerException("phone can't be null");
+            if(phone.isEmpty())
                 throw new IllegalArgumentException("Phone cannot be empty");
 
             this.firstName = firstName;
@@ -70,56 +67,28 @@ public class Person {
             this.zip = zip;
             this.phone = phone;
     }
-
     public String getFirstName() {
         return firstName;
     }
-
-
     public String getLastName() {
         return lastName;
     }
-
-
     public String getAddress() {
         return address;
     }
-
-
     public String getCity() {
         return city;
     }
-
-
     public String getState() {
         return state;
     }
-
-    /**
-     * Returns this Person's ZIP code.
-     *
-     * @return ZIP code of this Person
-     */
     public String getZip() {
         return zip;
     }
-
-    /**
-     * Returns this Person's telephone number.
-     *
-     * @return Telephone number of this Person.
-     */
     public String getPhone() {
         return phone;
     }
-
-
-    @Override
-    public String toString() {
-        return lastName + ", " + firstName;
-    }
-
-
+    @Override public String toString() { return lastName + ", " + firstName; }
     public boolean containsString(String findMe) {
         Pattern p = Pattern.compile(Pattern.quote(findMe), Pattern.CASE_INSENSITIVE);
         return p.matcher(firstName).find()
@@ -130,8 +99,6 @@ public class Person {
                 || p.matcher(zip).find()
                 || p.matcher(phone).find();
     }
-
-
     public String getField(int field) {
         switch (field) {
             case 0:
@@ -150,6 +117,4 @@ public class Person {
                 return phone;
             default:
                 throw new IllegalArgumentException("Field number out of bounds");
-        }
-    }
-}
+        } }}

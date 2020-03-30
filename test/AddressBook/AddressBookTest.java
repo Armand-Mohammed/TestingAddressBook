@@ -2,7 +2,7 @@ package AddressBook;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AddressBookTest {
 
@@ -28,7 +28,7 @@ class AddressBookTest {
         addressBook.remove(0);
 
         // Assert
-        assertEquals(expectedPerson, instance);
+        assertEquals(addressBook.getRowCount(),0);
     }
 
     @Test
