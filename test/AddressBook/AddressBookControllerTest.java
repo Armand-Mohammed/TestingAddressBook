@@ -1,11 +1,10 @@
 package AddressBook;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -82,28 +81,43 @@ class AddressBookControllerTest {
         assertEquals(addressBook.getRowCount(), 0);
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none(); // has to be public
-
-
-    //NOT COMPLETE 
     @Test
-    void open() {
+    void open()throws FileNotFoundException, SQLException {
+
+
+
+        Throwable exception = assertThrows(FileNotFoundException.class, () -> {
+            throw new FileNotFoundException("FileNotFound message");
+        });
+
+        Throwable exception2 = assertThrows(SQLException.class, () -> {
+            throw new SQLException("SQL message");
+        });
         File file = new File("Address Book");
-        exception.expect(FileNotFoundException.class);
-        exception.expectMessage("File was not found");
+        new FileSystem().saveFile(addressBook,file);
+        addressBookController.open(new File("Address Book"));
+
         boolean canRead = file.canRead();
+        //Assert
+        assertEquals("SQL message", exception2.getMessage());
+        assertEquals("FileNotFound message", exception.getMessage());
         assertTrue(canRead);
-        //addressBookController.open(file);
-       // InputStream is = this.getClass().getResourceAsStream("Address Book");
-       // assertNull(is);
     }
 
     @Test
-    void save() {
+    void save() throws SQLException {
+        Throwable exception2 = assertThrows(SQLException.class, () -> {
+            throw new SQLException("SQL message");
+        });
+        File file = new File("Address Book2");
+        addressBookController.save(file);
+
+        boolean exists = file.exists();
+        assertTrue(exists, file.toString());
     }
 
     @Test
     void getModel() {
+        assertEquals(addressBookController.getModel(), addressBook);
     }
 }

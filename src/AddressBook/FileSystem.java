@@ -17,23 +17,13 @@ public class FileSystem {
         addressBook.clear();
         // Iterate through all the records, adding them to the AddressBook
         while (rs.next()) {
-            Person p = new Person(
-                    rs.getString("firstName"),
-                    rs.getString("lastName"),
-                    rs.getString("address"),
-                    rs.getString("city"),
-                    rs.getString("state"),
-                    rs.getString("zip"),
-                    rs.getString("phone"));
+            Person p = new Person(rs.getString("firstName"), rs.getString("lastName"), rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getString("zip"), rs.getString("phone"));
             addressBook.add(p);
         }
-
         connection.close();
     }
 
-
-    public void saveFile(AddressBook addressBook, File file) throws SQLException {
-        // Create the table structure
+    public void saveFile(AddressBook addressBook, File file) throws SQLException {// Create the table structure
         Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
         Statement statement = connection.createStatement();
         statement.execute("DROP TABLE IF EXISTS persons");
