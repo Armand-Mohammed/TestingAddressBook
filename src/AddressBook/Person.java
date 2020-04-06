@@ -39,25 +39,33 @@ public class Person {
             if (address == null || address.isEmpty())
                 throw new IllegalArgumentException("Address cannot be empty");
 
-            if (city == null)
+            if (city == null) {
                 throw new NullPointerException("City can't be null");
-            if(city.isEmpty())
+            }
+            if(city.isEmpty()) {
                 throw new IllegalArgumentException("City cannot be empty");
+            }
 
-            if (state == null)
+            if (state == null) {
                 throw new NullPointerException("State can't be null") ;
-            if(state.isEmpty())
+            }
+            if(state.isEmpty()) {
                 throw new IllegalArgumentException("State cannot be empty");
+            }
 
-            if (zip == null)
+            if (zip.equals(null)) {
                 throw new NullPointerException("Zip can't be null");
-            if(zip.isEmpty())
+            }
+            if(zip.isEmpty()) {
                 throw new IllegalArgumentException("Zip cannot be empty");
+            }
 
-            if (phone == null)
+            if (phone.equals(null)) {
                 throw new NullPointerException("phone can't be null");
-            if(phone.isEmpty())
+            }
+            if(phone.isEmpty()) {
                 throw new IllegalArgumentException("Phone cannot be empty");
+            }
 
             this.firstName = firstName;
             this.lastName = lastName;

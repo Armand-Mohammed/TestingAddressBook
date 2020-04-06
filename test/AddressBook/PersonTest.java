@@ -165,7 +165,7 @@ class PersonTest {
     }
     @Test
     void personAddressEmptyTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","","","fort myers", "FL","39388","9876543210"));
+        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","Fulker","","fort myers", "FL","39388","9876543210"));
     }
 
     @Test
@@ -174,7 +174,7 @@ class PersonTest {
     }
     @Test
     void personCityEmptyTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","","my address","", "FL","","9876543210"));
+        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","jhglj","my address","", "FL","","9876543210"));
     }
     @Test
     void personCityNullTest(){
@@ -186,7 +186,7 @@ class PersonTest {
     }
     @Test
     void personStateEmptyTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","","my address","fort My", "","","9876543210"));
+        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker","my address","fort My", "","55555","9876543210"));
     }
     @Test
     void personStateNullTest(){
@@ -211,7 +211,7 @@ class PersonTest {
     }
     @Test
     void personPhoneEmptyTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","","my address","fort myers", "FL","45555",""));
+        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fjldl","my address","fort myers", "FL","45555",""));
     }
     @Test
     void personPhoneNullTest(){

@@ -16,6 +16,16 @@ public class FileSystemTest {
     Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
     Person instanceNumTwo = new Person("Ben", "Fulker", "1660 sw Fuck Street", "Fort Myers", "FL", "33317", "9545130066");
 
+    @Test
+    public void readDeletedFile() {
+        FileSystem fileSystem = new FileSystem();
+        File file = new File("Address Book");
+        //Delete file
+        file.delete();
+
+        //Try reading deleted file
+        assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook,file));
+    }
 
     @Test
     void readFile() {
