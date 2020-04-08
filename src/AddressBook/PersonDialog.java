@@ -1,6 +1,5 @@
-package GUI;
+package AddressBook;
 
-import AddressBook.Person;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -47,6 +46,7 @@ public class PersonDialog extends JDialog {
         p.get().add(l);
         firstName = new JTextField(20);
         l.setLabelFor(firstName);
+        firstName.setName("firstName");
         p.get().add(firstName);
 
 
@@ -54,6 +54,7 @@ public class PersonDialog extends JDialog {
         p.get().add(l);
         lastName = new JTextField(20);
         l.setLabelFor(lastName);
+        lastName.setName("lastName");
         p.get().add(lastName);
 
 
@@ -61,6 +62,7 @@ public class PersonDialog extends JDialog {
         p.get().add(l);
         address = new JTextField(20);
         l.setLabelFor(address);
+        address.setName("address");
         p.get().add(address);
 
 
@@ -68,6 +70,7 @@ public class PersonDialog extends JDialog {
         p.get().add(l);
         city = new JTextField(20);
         l.setLabelFor(city);
+        city.setName("city");
         p.get().add(city);
 
 
@@ -75,12 +78,14 @@ public class PersonDialog extends JDialog {
         p.get().add(l);
         state = new JTextField(20);
         l.setLabelFor(state);
+        state.setName("state");
         p.get().add(state);
 
         l = new JLabel("ZIP code:", JLabel.TRAILING);
         p.get().add(l);
         zip = new JTextField(20);
         l.setLabelFor(zip);
+        zip.setName("zip");
         p.get().add(zip);
 
 
@@ -88,6 +93,7 @@ public class PersonDialog extends JDialog {
         p.get().add(l);
         phone = new JTextField(20);
         l.setLabelFor(phone);
+        phone.setName("phone");
         p.get().add(phone);
 
 

@@ -1,4 +1,4 @@
-package GUI;
+package AddressBook;
 
 import javax.swing.*;
 import java.awt.*;
