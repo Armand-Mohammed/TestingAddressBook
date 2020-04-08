@@ -33,9 +33,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AddressBookGUITest {
 
     @Rule
-    public static TemporaryFolder folder = new TemporaryFolder();
+    public static TemporaryFolder tempFolder = new TemporaryFolder();
     private static File fakeFile = null;
-    private static FrameFixture window = null;
+    private static FrameFixture ourFrame = null;
 
     @BeforeAll
     public static void init() {
@@ -51,12 +51,12 @@ public class AddressBookGUITest {
         // Initialize window
 
         AddressBookGUI frame = GuiActionRunner.execute(() -> new AddressBookGUI());
-        window = new FrameFixture(frame);
-        window.show();
+        ourFrame = new FrameFixture(frame);
+        ourFrame.show();
 
         // Create SQL test file
-        folder.create();
-        fakeFile = folder.newFile("myFakeFile");
+        tempFolder.create();
+        fakeFile = tempFolder.newFile("myFakeFile");
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + fakeFile.getAbsoluteFile());
              Statement statement = connection.createStatement()) {
             statement.execute(
@@ -70,14 +70,14 @@ public class AddressBookGUITest {
                             "('Bonnie', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987654321')");
 
         } catch (SQLException exception) {
-            System.out.println("Unable to create test file:\n" + exception);
+            System.out.println("Test file not created:\n" + exception);
         }
     }
 
+    // Close assertJ ourFrame gui
     @AfterEach
     public void cleanEach() {
-        // Close assertJ window gui
-        window.cleanUp();
+        ourFrame.cleanUp();
     }
 
     @AfterAll
@@ -89,8 +89,8 @@ public class AddressBookGUITest {
     @Test
     public void canCreateNewPerson() {
         // Click and get dialog window
-        window.button("add").click();
-        DialogFixture dialog = window.dialog();
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Type 'Ben','Bucker','4444 Down Street','my city','FL','33333', and '0987654321'
         // into the respective boxes
@@ -112,23 +112,23 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Test person is added
-        window.table().requireRowCount(1);
+        ourFrame.table().requireRowCount(1);
     }
 
     @Test
     public void canEditPerson() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Test person gets fully loaded "('Ben', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987654321')
         dialog.textBox("firstName").requireText("Ben");
@@ -149,7 +149,7 @@ public class AddressBookGUITest {
 
         // Test that the table contains the updated data
         //"('Ben', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987645321')
-        window.table().requireContents(
+        ourFrame.table().requireContents(
                 new String[][] { { "Bucker", "Ben", "4444 Down Street", "my city", "FL", "33333", "5432106789" },
                         { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987645321" } });
     }
@@ -157,31 +157,31 @@ public class AddressBookGUITest {
     @Test
     public void canDeletePerson() {
         // Click 'open' item
-        window.menuItem("file").click();
-        window.menuItem("open").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
 
         // Get the file chooser and select the test file
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Check table now has the two persons in file
-        window.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(2);
 
         // Click on the 'Ben Bucker' entry
-        window.table().cell("Ben").click();
+        ourFrame.table().cell("Ben").click();
 
         // Click 'delete'
-        window.button("delete").click();
+        ourFrame.button("delete").click();
 
         // Test that only one row remains
-        window.table().requireRowCount(1);
+        ourFrame.table().requireRowCount(1);
     }
 
     @Test
     public void canCreateNewPersonCancelled() {
         // Click and get dialog window
-        window.button("add").click();
-        DialogFixture dialog = window.dialog();
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Type 'Ben'
         dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
@@ -191,23 +191,23 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("Cancel")).click();
 
         // Test person is not added
-        window.table().requireRowCount(0);
+        ourFrame.table().requireRowCount(0);
     }
 
     @Test
     public void canEditPersonCancelled() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Switch zip to '66666'
         dialog.textBox("phone").click().deleteText()
@@ -218,7 +218,7 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("Cancel")).click();
 
         // Test that the table is the same as the test file (Unchanged)
-        window.table().requireContents(
+        ourFrame.table().requireContents(
                 new String[][] { { "Bucker", "Ben", "4444 Down Street", "my city", "FL", "33333", "0987654321" },
                         { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987654321" } });
     }
@@ -226,48 +226,48 @@ public class AddressBookGUITest {
     @Test
     public void canEditPersonNoRowSelected() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         //Click edit button for no window
-        window.button("edit").click();
+        ourFrame.button("edit").click();
 
         //Test that the edit button on the main menu
         // is still focused indicating nothing was opened
-        window.button("edit").requireFocused();
+        ourFrame.button("edit").requireFocused();
     }
 
     @Test
     public void canDeletePersonNoRowSelected() {
         // Click 'open' item
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Check table now has the two persons in file
-        window.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(2);
 
         // Click 'delete'
-        window.button("delete").click();
+        ourFrame.button("delete").click();
 
         // Test that only both rows remain
-        window.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(2);
     }
 
     @Test
     public void canStartNewBook() {
         // Check that new item is clickable
-        window.menuItem("new").requireEnabled();
+        ourFrame.menuItem("new").requireEnabled();
 
         // Click 'new' item
-        window.menuItem("file").click();
-        window.menuItem("new").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("new").click();
 
         // Check that save item is now disabled
-        window.menuItem("save").requireDisabled();
+        ourFrame.menuItem("save").requireDisabled();
 
         // Check saveAs still matches state of save
         saveAndSaveAsMatchEnabledState();
@@ -276,22 +276,22 @@ public class AddressBookGUITest {
     @Test
     public void canOpenExistingBookBlankFile() throws IOException {
         // Check that open item is clickable
-        window.menuItem("open").requireEnabled();
+        ourFrame.menuItem("open").requireEnabled();
 
         // Click 'open' item
-        window.menuItem("file").click();
-        window.menuItem("open").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
 
         // Create a blank file
-        File fakeFile = folder.newFile("myOtherfakeFile");
+        File fakeFile = tempFolder.newFile("myOtherfakeFile");
         fakeFile.createNewFile();
 
         // Get the file chooser and select the file saved
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Check error message is displayed
-        window.optionPane().requireErrorMessage();
+        ourFrame.optionPane().requireErrorMessage();
 
         // Delete file
         fakeFile.delete();
@@ -300,21 +300,21 @@ public class AddressBookGUITest {
     @Test
     public void canOpenExistingBook() {
         // Check that open item is clickable
-        window.menuItem("open").requireEnabled();
+        ourFrame.menuItem("open").requireEnabled();
 
         // Click 'open' item
-        window.menuItem("file").click();
-        window.menuItem("open").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
 
         // Get the file chooser and select the file saved
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Check table now has the two persons in file
-        window.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(2);
 
         // Check that save item is now disabled
-        window.menuItem("save").requireDisabled();
+        ourFrame.menuItem("save").requireDisabled();
 
         // Check saveAs still matches state of save
         saveAndSaveAsMatchEnabledState();
@@ -323,25 +323,25 @@ public class AddressBookGUITest {
     @Test
     public void canOpenExistingBookCancelled() {
         // Check that open item is clickable
-        window.menuItem("open").requireEnabled();
+        ourFrame.menuItem("open").requireEnabled();
 
         // Click 'open' item
-        window.menuItem("file").click();
-        window.menuItem("open").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
 
         // Get the file chooser and select the file saved
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().cancel();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().cancel();
 
         // Check table now has the two persons in file
-        window.table().requireRowCount(0);
+        ourFrame.table().requireRowCount(0);
     }
 
     @Test
     public void canSaveNewBookOverAnother() {
         //Add a person to a new book
-        window.button("add").click();
-        DialogFixture dialog = window.dialog();
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Type 'Ben','Bucker','4444 Down Street','my city','FL','33333', and '0987654321'
         // into the respective boxes
@@ -363,35 +363,35 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         //Make sure save and saveAs are enabled
-        window.menuItem("save").requireEnabled();
-        window.menuItem("saveAs").requireEnabled();
+        ourFrame.menuItem("save").requireEnabled();
+        ourFrame.menuItem("saveAs").requireEnabled();
 
         //Click 'save'
-        window.menuItem("file").click();
-        window.menuItem("save").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("save").click();
 
         //Save over test file
-        window.fileChooser().selectFile(fakeFile);
-        window.fileChooser().approve();
+        ourFrame.fileChooser().selectFile(fakeFile);
+        ourFrame.fileChooser().approve();
 
         //Check that question message is shown for overwriting a book
-        window.optionPane().requireQuestionMessage();
+        ourFrame.optionPane().requireQuestionMessage();
     }
 
     @Test
     public void canSaveEditedBook() throws IOException {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Edit the person
         dialog.textBox("phone").click().deleteText()
@@ -400,35 +400,35 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Check save button is active
-        window.menuItem("save").requireEnabled();
-        window.menuItem("saveAs").requireEnabled();
+        ourFrame.menuItem("save").requireEnabled();
+        ourFrame.menuItem("saveAs").requireEnabled();
 
         // Click 'save' and save to file
-        window.menuItem("file").click();
-        window.menuItem("saveAs").click();
-        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox()
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("saveAs").click();
+        ourFrame.fileChooser().setCurrentDirectory(tempFolder.getRoot()).fileNameTextBox()
                 .pressAndReleaseKeys(VK_F, VK_A, VK_K, VK_E, VK_SPACE, VK_F, VK_I, VK_L, VK_E);
-        window.fileChooser().approve();
+        ourFrame.fileChooser().approve();
 
         // Test file exists
-        File file = new File(folder.getRoot() + "/test file");
+        File file = new File(tempFolder.getRoot() + "/fake file");
         assertTrue(file.exists());
     }
 
     @Test
     public void canSaveEditedBookCancelled() throws IOException {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Edit the person
         dialog.textBox("phone").click().deleteText()
@@ -437,47 +437,47 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Click 'save' and cancel
-        window.menuItem("file").click();
-        window.menuItem("saveAs").click();
-        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox()
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("saveAs").click();
+        ourFrame.fileChooser().setCurrentDirectory(tempFolder.getRoot()).fileNameTextBox()
                 .pressAndReleaseKeys(VK_F, VK_A, VK_K, VK_E, VK_SPACE, VK_F, VK_I, VK_L, VK_E);
-        window.fileChooser().cancel();
+        ourFrame.fileChooser().cancel();
 
         // Test file Buckers not exists
-        File file = new File(folder.getRoot() + "/fake file");
+        File file = new File(tempFolder.getRoot() + "/fake file");
         assertFalse(file.exists());
     }
 
     @Test
     public void canPrintBook() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click print
-        window.menuItem("file").click();
-        window.menuItem("print").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("print").click();
 
         // Make sure that the print dialog is visible
-        window.dialog().requireVisible();
+        ourFrame.dialog().requireVisible();
     }
 
     @Test
     public void confirmDialogShowsOnNew() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Change Ben's zip to '66666'
         dialog.textBox("phone").click().deleteText()
@@ -488,27 +488,27 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Click 'New'
-        window.menuItem("file").click();
-        window.menuItem("new").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("new").click();
 
         // Test that a question message is shown
-        window.optionPane().requireQuestionMessage();
+        ourFrame.optionPane().requireQuestionMessage();
     }
 
     @Test
     public void confirmDialogShowsOnOpen() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Change Ben's zip to '54321'
         dialog.textBox("phone").click().deleteText()
@@ -519,27 +519,27 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Click 'Open' and load test file again
-        window.menuItem("file").click();
-        window.menuItem("open").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
 
         // Test that a question message is shown
-        window.optionPane().requireQuestionMessage();
+        ourFrame.optionPane().requireQuestionMessage();
     }
 
     @Test
     public void confirmDialogShowsOnQuitConfirm() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Change Ben's zip to '54321'
         dialog.textBox("phone").click().deleteText()
@@ -550,30 +550,30 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Click 'quit'
-        window.menuItem("file").click();
-        window.menuItem("quit").click();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("quit").click();
 
         // Test that a question message is shown
-        window.optionPane().requireQuestionMessage();
+        ourFrame.optionPane().requireQuestionMessage();
 
         //Test closing works
-        window.optionPane().buttonWithText("Yes").click();
+        ourFrame.optionPane().buttonWithText("Yes").click();
     }
 
     @Test
     public void confirmDialogShowsOnWindowCloseCancel() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
-        window.table().cell("Ben").click();
-        window.button("edit").click();
+        ourFrame.table().cell("Ben").click();
+        ourFrame.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = window.dialog();
+        DialogFixture dialog = ourFrame.dialog();
 
         // Change Ben's phone number
         dialog.textBox("phone").click().deleteText()
@@ -583,46 +583,46 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Close window
-        window.close();
+        ourFrame.close();
 
         // Test that a question message is shown
-        window.optionPane().requireQuestionMessage();
+        ourFrame.optionPane().requireQuestionMessage();
 
         //Test cancelling works
-        window.optionPane().buttonWithText("No").click();
+        ourFrame.optionPane().buttonWithText("No").click();
     }
 
     @Test
     public void canSearchPeople() {
         // Load sample address Book
-        window.menuItem("file").click();
-        window.menuItem("open").click();
-        window.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        window.fileChooser().approve();
+        ourFrame.menuItem("file").click();
+        ourFrame.menuItem("open").click();
+        ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+        ourFrame.fileChooser().approve();
 
         //Type 'jan'
-        window.textBox().pressAndReleaseKeys(VK_B,VK_O,VK_N);
+        ourFrame.textBox().pressAndReleaseKeys(VK_B,VK_O,VK_N);
 
         //Check only 'Bonnie' shows
-        window.table().requireRowCount(1);
+        ourFrame.table().requireRowCount(1);
 
         //Type 'jo'
-        window.textBox().deleteText().pressAndReleaseKeys(VK_B,VK_E);
+        ourFrame.textBox().deleteText().pressAndReleaseKeys(VK_B,VK_E);
 
         //Check only 'Ben' entry shows
-        window.table().requireRowCount(1);
+        ourFrame.table().requireRowCount(1);
 
         //Type '12'
-        window.textBox().deleteText().pressAndReleaseKeys(VK_4,VK_4);
+        ourFrame.textBox().deleteText().pressAndReleaseKeys(VK_4,VK_4);
 
         //Check both entries show
-        window.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(2);
     }
 
     @Test
     public void saveIsDisabledByDefault() {
         // Check if saving is disabled
-        window.menuItem("save").requireDisabled();
+        ourFrame.menuItem("save").requireDisabled();
 
         // Check save and saveAs states match
         saveAndSaveAsMatchEnabledState();
@@ -631,17 +631,17 @@ public class AddressBookGUITest {
     @Test
     public void programLaunchesCorrectly() throws ClassNotFoundException {
         //Get robot
-        Robot robot = window.robot();
+        Robot robot = ourFrame.robot();
 
-        //Clear the started program
-        window.cleanUp();
+        //Clear the started ourFrame
+        ourFrame.cleanUp();
 
         //Start the application
         AddressBookGUI.main(null);
 
-        //Find the generated window and ensure it is showing. If one is not found
+        //Find the generated ourFrame and ensure it is showing. If one is not found
         //this test fails.
-        window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
+        ourFrame = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
             protected boolean isMatching(JFrame frame) {
                 return "Address Book".equals(frame.getTitle()) && frame.isShowing();
             }
@@ -651,6 +651,6 @@ public class AddressBookGUITest {
     @Test
     public void saveAndSaveAsMatchEnabledState() {
         // Check if save and saveAs match enabled state
-        assertEquals(window.menuItem("save").isEnabled(), window.menuItem("saveAs").isEnabled());
+        assertEquals(ourFrame.menuItem("save").isEnabled(), ourFrame.menuItem("saveAs").isEnabled());
     }
 }
