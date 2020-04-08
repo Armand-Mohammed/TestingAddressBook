@@ -47,7 +47,13 @@ public class AddressBookGUI extends JFrame {
     private File currentFile = null;
 
     public AddressBookGUI() {
-        //Give names for GUI components
+        // Arrange the window controls
+        nameList.setRowSorter(tableRowSorter);
+        nameList.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(nameList);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        //Set Names for each GUI components
         nameList.setName("table");
         addButton.setName("add");
         editButton.setName("edit");
@@ -59,12 +65,6 @@ public class AddressBookGUI extends JFrame {
         printItem.setName("print");
         quitItem.setName("quit");
         searchTextField.setName("search");
-
-        // Arrange the window controls
-        nameList.setRowSorter(tableRowSorter);
-        nameList.setFillsViewportHeight(true);
-        JScrollPane scrollPane = new JScrollPane(nameList);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         JMenuBar menuBar = new JMenuBar();
         JMenu file = new JMenu("File");

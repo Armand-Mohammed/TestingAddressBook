@@ -1,12 +1,10 @@
 package AddressBook;
 
-
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
-import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.security.NoExitSecurityManagerInstaller;
@@ -23,13 +21,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static java.awt.event.KeyEvent.*;
+import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.junit.jupiter.api.Assertions.*;
 
-//NOTE: Due to a bug(s) in AssertJ/JDK, this entire class's
-//tests fail on MacOS systems. This is partly because of the way
-//the system simulates clicks on the GUI. It requires special
-//security permissions to access the mouse and keyboard.
-//SEE: https://github.com/joel-costigliola/assertj-swing/issues/25
+//This will only work on Windows PC and not on MAC OSX
 public class AddressBookGUITest {
 
     @Rule
@@ -87,25 +82,44 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canCreateNewPerson() {
+    public void checkStateOfSaveAndSaveAs() {
+        //Act
+        boolean save = ourFrame.menuItem("save").isEnabled();
+        boolean saveAs = ourFrame.menuItem("saveAs").isEnabled();
+
+        //Assert enabled state is the same
+        assertEquals(save, saveAs);
+    }
+    @Test
+    public void createsNewPerson() {
         // Click and get dialog window
         ourFrame.button("add").click();
         DialogFixture dialog = ourFrame.dialog();
 
-        // Type 'Ben','Bucker','4444 Down Street','my city','FL','33333', and '0987654321'
-        // into the respective boxes
+        //Robot type firstName Ben in text box
         dialog.textBox("firstName")
-                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_E, VK_N);
-        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
+                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_E, VK_N);
+
+        //Robot type lastName Bucker in text box
+         dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_U, VK_C,VK_K, VK_E, VK_R);
+
+        //Robot type address 4444 Down Street in text box
         dialog.textBox("address").pressAndReleaseKeys(VK_4, VK_4, VK_4, VK_4, VK_SPACE).pressKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_W, VK_N)
                 .pressAndReleaseKeys(VK_SPACE).pressKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+
+        //Robot type city "my city" in text box
         dialog.textBox("city").pressAndReleaseKeys(VK_M, VK_Y,VK_SPACE, VK_C, VK_I, VK_T, VK_Y);
+
+        //Robot type state "FL" text box
         dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+
+        //Robot type zip "33333" in text box
         dialog.textBox("zip").pressAndReleaseKeys(VK_3, VK_3, VK_3, VK_3, VK_3);
+
+        //Robot type phone "0987654321" in text box
         dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
 
         // Click 'OK'
@@ -116,7 +130,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canEditPerson() {
+    public void editsPerson() {
         // Load sample address Book
         ourFrame.menuItem("file").click();
         ourFrame.menuItem("open").click();
@@ -130,16 +144,28 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = ourFrame.dialog();
 
-        // Test person gets fully loaded "('Ben', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987654321')
+        //Load firstName "Ben" into textbox
         dialog.textBox("firstName").requireText("Ben");
+
+        //Load lastName "Bucker" into textbox
         dialog.textBox("lastName").requireText("Bucker");
+
+        //Load address "4444 Down Street" into textbox
         dialog.textBox("address").requireText("4444 Down Street");
+
+        //Load city "my city" into textbox
         dialog.textBox("city").requireText("my city");
+
+        //Load state "FL" into textbox
         dialog.textBox("state").requireText("FL");
+
+        //Load zip "33333" into textbox
         dialog.textBox("zip").requireText("33333");
+
+        //Load phone "0987654321" into textbox
         dialog.textBox("phone").requireText("0987654321");
 
-        // Switch Ben Bukers zip to '66666'
+        // Robot Edits Ben Bukers zip to '66666'
         dialog.textBox("phone").click().deleteText()
                 .pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1, VK_0, VK_6, VK_7, VK_8, VK_9);
 
@@ -183,7 +209,7 @@ public class AddressBookGUITest {
         ourFrame.button("add").click();
         DialogFixture dialog = ourFrame.dialog();
 
-        // Type 'Ben'
+        // Robot types 'Ben'
         dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_E,VK_N);
 
@@ -270,7 +296,7 @@ public class AddressBookGUITest {
         ourFrame.menuItem("save").requireDisabled();
 
         // Check saveAs still matches state of save
-        saveAndSaveAsMatchEnabledState();
+        checkStateOfSaveAndSaveAs();
     }
 
     @Test
@@ -317,7 +343,7 @@ public class AddressBookGUITest {
         ourFrame.menuItem("save").requireDisabled();
 
         // Check saveAs still matches state of save
-        saveAndSaveAsMatchEnabledState();
+        checkStateOfSaveAndSaveAs();
     }
 
     @Test
@@ -343,20 +369,30 @@ public class AddressBookGUITest {
         ourFrame.button("add").click();
         DialogFixture dialog = ourFrame.dialog();
 
-        // Type 'Ben','Bucker','4444 Down Street','my city','FL','33333', and '0987654321'
-        // into the respective boxes
+        //Robot type firstName Ben in text box
         dialog.textBox("firstName")
-                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_E, VK_N);
+                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_E, VK_N);
+
+        //Robot type lastName Bucker in text box
         dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_U, VK_C,VK_K, VK_E, VK_R);
+
+        //Robot type address 4444 Down Street in text box
         dialog.textBox("address").pressAndReleaseKeys(VK_4, VK_4, VK_4, VK_4, VK_SPACE).pressKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_W, VK_N)
                 .pressAndReleaseKeys(VK_SPACE).pressKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+
+        //Robot type city "my city" in text box
         dialog.textBox("city").pressAndReleaseKeys(VK_M, VK_Y,VK_SPACE, VK_C, VK_I, VK_T, VK_Y);
+
+        //Robot type state "FL" text box
         dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+
+        //Robot type zip "33333" in text box
         dialog.textBox("zip").pressAndReleaseKeys(VK_3, VK_3, VK_3, VK_3, VK_3);
+
+        //Robot type phone "0987654321" in text box
         dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
 
         // Click 'OK'
@@ -379,7 +415,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canSaveEditedBook() throws IOException {
+    public void saveAddressBookAfterEdit() throws IOException {
         // Load sample address Book
         ourFrame.menuItem("file").click();
         ourFrame.menuItem("open").click();
@@ -393,7 +429,7 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = ourFrame.dialog();
 
-        // Edit the person
+        // Edit the phone field
         dialog.textBox("phone").click().deleteText()
                 .pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1, VK_0, VK_6, VK_7, VK_8, VK_9);
 
@@ -423,14 +459,14 @@ public class AddressBookGUITest {
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
         ourFrame.fileChooser().approve();
 
-        // Click 'Ben Bucker' test person entry and click 'Edit'
+        // Click 'Ben' test person entry and click 'Edit'
         ourFrame.table().cell("Ben").click();
         ourFrame.button("edit").click();
 
         // Get the person dialog
         DialogFixture dialog = ourFrame.dialog();
 
-        // Edit the person
+        // Edit the phone for person Ben
         dialog.textBox("phone").click().deleteText()
                 .pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1, VK_0, VK_6, VK_7, VK_8);
 
@@ -449,7 +485,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canPrintBook() {
+    public void printsTheAddressBook() {
         // Load sample address Book
         ourFrame.menuItem("file").click();
         ourFrame.menuItem("open").click();
@@ -465,7 +501,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void confirmDialogShowsOnNew() {
+    public void confirmDialogOnNew() {
         // Load sample address Book
         ourFrame.menuItem("file").click();
         ourFrame.menuItem("open").click();
@@ -593,7 +629,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canSearchPeople() {
+    public void searchForPerson() {
         // Load sample address Book
         ourFrame.menuItem("file").click();
         ourFrame.menuItem("open").click();
@@ -620,37 +656,30 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void saveIsDisabledByDefault() {
+    public void saveIsDisabledOnStartUp() {
         // Check if saving is disabled
         ourFrame.menuItem("save").requireDisabled();
 
         // Check save and saveAs states match
-        saveAndSaveAsMatchEnabledState();
+        checkStateOfSaveAndSaveAs();
     }
 
     @Test
-    public void programLaunchesCorrectly() throws ClassNotFoundException {
+    public void programLoads() throws ClassNotFoundException {
         //Get robot
         Robot robot = ourFrame.robot();
 
         //Clear the started ourFrame
         ourFrame.cleanUp();
 
-        //Start the application
+        //Start the AddressBookGUI application
         AddressBookGUI.main(null);
 
-        //Find the generated ourFrame and ensure it is showing. If one is not found
-        //this test fails.
-        ourFrame = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
+        //Generate and find ourFrame if not found test will fail
+        ourFrame = findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
             protected boolean isMatching(JFrame frame) {
                 return "Address Book".equals(frame.getTitle()) && frame.isShowing();
             }
         }).using(robot);
-    }
-
-    @Test
-    public void saveAndSaveAsMatchEnabledState() {
-        // Check if save and saveAs match enabled state
-        assertEquals(ourFrame.menuItem("save").isEnabled(), ourFrame.menuItem("saveAs").isEnabled());
     }
 }

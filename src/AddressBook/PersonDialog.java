@@ -1,7 +1,5 @@
 package AddressBook;
 
-import org.jetbrains.annotations.Nullable;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,19 +19,6 @@ public class PersonDialog extends JDialog {
     private JTextField state;
     private JTextField zip;
     private JTextField phone;
-
-    /*  Set up a multidimensional equivalence class and boundary value analysis.
-        Multidimensional equivalence class: Will be able to test all inputs at the same time. Because they will all be inputted in the same dialog box.
-        Firstname:
-            The GUI: limits characters to 15
-                     makes sure only letters are entered
-            The Test: empty String, String with 0-15 digits, String with over 15 characters
-        Lastname:
-            The GUI: limits characters to 15
-                     makes sure only letters are entered
-            The Test: empty String, String with 0-15 digits, String with over 15 characters
-        Address:
-     */
 
     public PersonDialog(Frame parent) {
 
@@ -127,10 +112,12 @@ public class PersonDialog extends JDialog {
         setLocation((parent.getWidth() - getWidth()) / 2, (parent.getHeight() - getHeight()) / 2);
     }
 
-    public PersonDialog(Frame parent, @Nullable Person person) {
+    public PersonDialog(Frame parent, Person person) {
         this(parent);
-        if (person == null)
+        /*if (person == null)
             return;
+
+         */
         firstName.setText(person.getFirstName());
         lastName.setText(person.getLastName());
         address.setText(person.getAddress());
@@ -149,7 +136,16 @@ public class PersonDialog extends JDialog {
 
 
     public Person getPerson() {
-        if (firstName != null && lastName != null && !firstName.getText().isEmpty() && !lastName.getText().isEmpty()) {
+
+            return new Person(firstName.getText(),
+                    lastName.getText(),
+                    address.getText(),
+                    city.getText(),
+                    state.getText(),
+                    zip.getText(),
+                    phone.getText());
+
+       /* if (firstName != null && lastName != null && !firstName.getText().isEmpty() && !lastName.getText().isEmpty()) {
             return new Person(firstName.getText(),
                     lastName.getText(),
                     address.getText(),
@@ -159,6 +155,6 @@ public class PersonDialog extends JDialog {
                     phone.getText());
         } else {
             return null;
-        }
+        }*/
     }
 }
