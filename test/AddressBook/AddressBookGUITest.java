@@ -148,10 +148,10 @@ public class AddressBookGUITest {
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Test that the table contains the updated data
-        //"('Ben', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987645321')
+        //"('Ben', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987654321')
         ourFrame.table().requireContents(
                 new String[][] { { "Bucker", "Ben", "4444 Down Street", "my city", "FL", "33333", "5432106789" },
-                        { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987645321" } });
+                        { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987654321" } });
     }
 
     @Test
