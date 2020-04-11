@@ -1,87 +1,92 @@
 package AddressBook;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AddressBookTest {
 
-    AddressBook addressBook = new AddressBook();
-    Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
+    private AddressBook addressbookStub;
+    private Person personStub;
+
+    private AddressBook addressbookMock = new AddressBook();
+    private Person samplePersonMock = mock(Person.class);
+
+    private AddressBook addressbookTest = new AddressBook();
+    private Person personTest = new Person("Armand", "person", "street", "city",
+            "state", "33317", "9545130066");
+
+    @BeforeEach
+    public void setUp() {
+        addressbookStub = mock(AddressBook.class);
+        personStub = new Person("test", "person", "street", "city",
+                "state", "33317", "9545130066");
+    }
+
 
     @Test
-    void add() {
-        // Act
-        addressBook.add(instance);
-
-        // Assert
-        assertEquals(instance, addressBook.get(0));
+    void addStub() {
+        addressbookStub.add(personStub);
+        Assertions.assertEquals(personStub.getFirstName(), "test");
     }
 
     @Test
-    void remove() {
-        // Arrange
-        Person expectedPerson = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
-
-        // Act
-        addressBook.add(instance);
-        addressBook.remove(0);
-
-        // Assert
-        assertEquals(addressBook.getRowCount(),0);
+    void removeMock() {
+        addressbookMock.add(samplePersonMock);
+        addressbookMock.remove(0);
+        assertEquals(addressbookMock.getRowCount(), 0);
     }
 
     @Test
     void getPersons() {
-        AddressBook getPersonTest = new AddressBook();
+        AddressBook getTest = new AddressBook();
+        Person[] result = getTest.getPersons();
 
-        Person[] personResult = getPersonTest.getPersons();
+
     }
 
     @Test
     void set() {
-        // Act
-        addressBook.add(instance);
-        addressBook.set(0, instance);
+        addressbookTest.add(personTest);
+        addressbookTest.set(0, personTest);
+
     }
 
     @Test
     void get() {
-        // Act
-        addressBook.add(instance);
-        addressBook.get(0);
+        addressbookTest.add(personTest);
+        addressbookTest.get(0);
+
     }
 
     @Test
     void clear() {
-        // Act
-        addressBook.clear();
-        addressBook.add(instance);
-        addressBook.clear();
+        addressbookTest.add(personTest);
+        addressbookTest.clear();
     }
 
     @Test
     void getRowCount() {
-        // Act
-        addressBook.getRowCount();
+        addressbookTest.getRowCount();
     }
 
     @Test
-    void getColumnCount() {
-        // Act
-        addressBook.getColumnCount();
+    void getColumnCount(){
+        addressbookTest.getColumnCount();
     }
 
     @Test
-    void getValueAt() {
-        // Act
-        addressBook.add(instance);
-        addressBook.getValueAt(0, 0);
+    void getValueAt(){
+        addressbookTest.add(personTest);
+        addressbookTest.getValueAt(0,0);
+
     }
 
     @Test
-    void getColumnName() {
-        // Act
-        addressBook.getColumnName(0);
+    void getColumnName(){
+        addressbookTest.getColumnName(0);
     }
+
 }
