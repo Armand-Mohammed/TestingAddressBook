@@ -64,6 +64,4 @@ class PersonDialogTest {
         // Uninstall NoExistSecurityManager to enable program to close after test runs
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
     }
-
-
 }

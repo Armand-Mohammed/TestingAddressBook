@@ -1,6 +1,5 @@
 package AddressBook;//package GUI;
 
-//import AddressBook.FileSystem;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -20,7 +19,7 @@ public class AddressBookGUI extends JFrame {
     private static void createAndShowGUI() {
         AddressBook addressBook = new AddressBook();
         AddressBookController controller = new AddressBookController(addressBook);
-        GUI.AddressBookGUI gui = new GUI.AddressBookGUI(controller, addressBook);
+        AddressBookGUI gui = new AddressBookGUI();
         gui.setVisible(true);
     }
 
@@ -141,7 +140,7 @@ public class AddressBookGUI extends JFrame {
         file.add(new JSeparator());
         printItem.addActionListener(e ->
         {
-            try {
+           try {
                 nameList.print();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Printing failed: " + ex.getMessage(), "Print", JOptionPane.WARNING_MESSAGE);

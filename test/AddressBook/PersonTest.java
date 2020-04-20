@@ -1,4 +1,6 @@
 package AddressBook;
+import AddressBook.Person;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,49 +13,49 @@ class PersonTest {
     @Test
     void getFirstName() {
         //Assert
-        assertEquals("Armand",instance.getFirstName());
+        Assertions.assertEquals("Armand",instance.getFirstName());
     }
 
     @Test
     void getLastName() {
         //Assert
-        assertEquals("Mohammed",instance.getLastName());
+        Assertions.assertEquals("Mohammed",instance.getLastName());
     }
 
     @Test
     void getAddress() {
         //Assert
-        assertEquals("1660 sw 48th ave", instance.getAddress());
+        Assertions.assertEquals("1660 sw 48th ave", instance.getAddress());
     }
 
     @Test
     void getCity() {
         //Assert
-        assertEquals("Fort Myers", instance.getCity());
+        Assertions.assertEquals("Fort Myers", instance.getCity());
     }
 
     @Test
     void getState() {
         //Assert
-        assertEquals("FL", instance.getState());
+        Assertions.assertEquals("FL", instance.getState());
     }
 
     @Test
     void getZip() {
         //Assert
-        assertEquals("33317", instance.getZip());
+        Assertions.assertEquals("33317", instance.getZip());
     }
 
     @Test
     void getPhone() {
         //Assert
-        assertEquals("9545130066", instance.getPhone());
+        Assertions.assertEquals("9545130066", instance.getPhone());
     }
 
     @Test
     void toStringTest() {
         //Assert
-        assertEquals( "Mohammed, Armand",instance.toString());
+        Assertions.assertEquals( "Mohammed, Armand",instance.toString());
     }
 
     @Test

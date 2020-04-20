@@ -18,13 +18,16 @@ public class FileSystemTest {
 
     @Test
     public void readDeletedFile() {
+
         FileSystem fileSystem = new FileSystem();
         File file = new File("Address Book");
+        boolean exists = file.exists();
         //Delete file
-        file.delete();
+        if(exists)
+            file.delete();
 
         //Try reading deleted file
-        assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook,file));
+         assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook, file));
     }
 
     @Test

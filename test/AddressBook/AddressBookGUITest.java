@@ -1,10 +1,12 @@
 package AddressBook;
 
+
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
+import org.assertj.swing.exception.EdtViolationException;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.security.NoExitSecurityManagerInstaller;
@@ -44,16 +46,25 @@ public class AddressBookGUITest {
     @BeforeEach
     public void initEach() throws IOException, ClassNotFoundException {
         // Initialize window
-
+        //creates simulated GUI with the GuiActionRunner
         AddressBookGUI frame = GuiActionRunner.execute(() -> new AddressBookGUI());
+        //Creates FrameFixture
         ourFrame = new FrameFixture(frame);
+        //displays GUI
         ourFrame.show();
 
         // Create SQL test file
         tempFolder.create();
+
+        //creates fake file
         fakeFile = tempFolder.newFile("myFakeFile");
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + fakeFile.getAbsoluteFile());
-             Statement statement = connection.createStatement()) {
+
+        //Try to create an temp sql db for an AddressBook with multiple people
+        try (
+                Connection connection = DriverManager.getConnection(
+                "jdbc:sqlite:" + fakeFile.getAbsoluteFile());
+                Statement statement = connection.createStatement()
+        ) {
             statement.execute(
                     "CREATE TABLE persons " +
                             "(firstName TEXT, lastName TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, phone TEXT)");
@@ -63,6 +74,9 @@ public class AddressBookGUITest {
             statement.execute(
                     "INSERT INTO persons (firstName, lastName, address, city, state, zip, phone) VALUES " +
                             "('Bonnie', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987654321')");
+            statement.execute(
+                    "INSERT INTO persons (firstName, lastName, address, city, state, zip, phone) VALUES " +
+                            "('Paul', 'Bucker', '1111 Up Street', 'his city', 'FL', '22222', '1234567890')");
 
         } catch (SQLException exception) {
             System.out.println("Test file not created:\n" + exception);
@@ -131,10 +145,17 @@ public class AddressBookGUITest {
 
     @Test
     public void editsPerson() {
-        // Load sample address Book
+        //open with sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
@@ -169,7 +190,6 @@ public class AddressBookGUITest {
         dialog.textBox("phone").click().deleteText()
                 .pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1, VK_0, VK_6, VK_7, VK_8, VK_9);
 
-
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
@@ -177,21 +197,27 @@ public class AddressBookGUITest {
         //"('Ben', 'Bucker', '4444 Down Street', 'my city', 'FL', '33333', '0987654321')
         ourFrame.table().requireContents(
                 new String[][] { { "Bucker", "Ben", "4444 Down Street", "my city", "FL", "33333", "5432106789" },
-                        { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987654321" } });
+                        { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987654321" },
+                        { "Bucker", "Paul", "1111 Up Street", "his city", "FL", "22222", "1234567890" }
+                });
     }
 
     @Test
     public void canDeletePerson() {
-        // Click 'open' item
+        // select file from menu
         ourFrame.menuItem("file").click();
+
+        //select open from menu
         ourFrame.menuItem("open").click();
 
         // Get the file chooser and select the test file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         // Check table now has the two persons in file
-        ourFrame.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(3);
 
         // Click on the 'Ben Bucker' entry
         ourFrame.table().cell("Ben").click();
@@ -200,7 +226,7 @@ public class AddressBookGUITest {
         ourFrame.button("delete").click();
 
         // Test that only one row remains
-        ourFrame.table().requireRowCount(1);
+        ourFrame.table().requireRowCount(2);
     }
 
     @Test
@@ -222,11 +248,18 @@ public class AddressBookGUITest {
 
     @Test
     public void canEditPersonCancelled() {
-        // Load sample address Book
+        // open with sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
-        ourFrame.fileChooser().approve();
+
+        //approve fakeFile
+        ourFrame.fileChooser().approve();;
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
         ourFrame.table().cell("Ben").click();
@@ -246,15 +279,25 @@ public class AddressBookGUITest {
         // Test that the table is the same as the test file (Unchanged)
         ourFrame.table().requireContents(
                 new String[][] { { "Bucker", "Ben", "4444 Down Street", "my city", "FL", "33333", "0987654321" },
-                        { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987654321" } });
+                        { "Bucker", "Bonnie", "4444 Down Street", "my city", "FL", "33333", "0987654321" },
+                        { "Bucker", "Paul", "1111 Up Street", "his city", "FL", "22222", "1234567890" }
+                });
     }
+    //"('Paul', 'Bucker', '1111 Up Street', 'his city', 'FL', '22222', '1234567890')"
 
     @Test
     public void canEditPersonNoRowSelected() {
-        // Load sample address Book
+        // open with sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         //Click edit button for no window
@@ -268,23 +311,30 @@ public class AddressBookGUITest {
     @Test
     public void canDeletePersonNoRowSelected() {
         // Click 'open' item
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         // Check table now has the two persons in file
-        ourFrame.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(3);
 
         // Click 'delete'
         ourFrame.button("delete").click();
 
         // Test that only both rows remain
-        ourFrame.table().requireRowCount(2);
+        ourFrame.table().requireRowCount(3);
     }
 
     @Test
-    public void canStartNewBook() {
+    public void canStartNewAddressBook() {
         // Check that new item is clickable
         ourFrame.menuItem("new").requireEnabled();
 
@@ -300,7 +350,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canOpenExistingBookBlankFile() throws IOException {
+    public void canOpenExistingAddressBookBlankFile() throws IOException {
         // Check that open item is clickable
         ourFrame.menuItem("open").requireEnabled();
 
@@ -324,7 +374,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canOpenExistingBook() {
+    public void canOpenExistingAddressBook() {
         // Check that open item is clickable
         ourFrame.menuItem("open").requireEnabled();
 
@@ -334,10 +384,12 @@ public class AddressBookGUITest {
 
         // Get the file chooser and select the file saved
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
-        // Check table now has the two persons in file
-        ourFrame.table().requireRowCount(2);
+        // Check table now has the three persons in file
+        ourFrame.table().requireRowCount(3);
 
         // Check that save item is now disabled
         ourFrame.menuItem("save").requireDisabled();
@@ -347,7 +399,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canOpenExistingBookCancelled() {
+    public void canOpenExistingAddressBookCancelled() {
         // Check that open item is clickable
         ourFrame.menuItem("open").requireEnabled();
 
@@ -364,7 +416,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canSaveNewBookOverAnother() {
+    public void canSaveNewAddressBookOverAnother() {
         //Add a person to a new book
         ourFrame.button("add").click();
         DialogFixture dialog = ourFrame.dialog();
@@ -416,10 +468,17 @@ public class AddressBookGUITest {
 
     @Test
     public void saveAddressBookAfterEdit() throws IOException {
-        // Load sample address Book
+        // open with sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
@@ -452,10 +511,15 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void canSaveEditedBookCancelled() throws IOException {
-        // Load sample address Book
+    public void canSaveEditedAddressBookCancelled() throws IOException {
+        // open with sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
         ourFrame.fileChooser().approve();
 
@@ -486,10 +550,16 @@ public class AddressBookGUITest {
 
     @Test
     public void printsTheAddressBook() {
-        // Load sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         // Click print
@@ -501,11 +571,66 @@ public class AddressBookGUITest {
     }
 
     @Test
+    public void printException(){
+        try {
+            AddressBookGUI gui = new AddressBookGUI();
+            AddressBook addressBook = new AddressBook();
+            AddressBookController addressBookController = new AddressBookController(addressBook);
+            Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
+            addressBook.add(instance);
+            JTable nameList = new JTable(addressBook);
+
+            //open menu and select file
+            ourFrame.menuItem("file").click();
+
+            //menu select open
+            ourFrame.menuItem("open").click();
+
+            //opens fake file
+            ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+            //approve fakeFile
+            ourFrame.fileChooser().approve();
+
+            // Click print
+            ourFrame.menuItem("file").click();
+            ourFrame.menuItem("print").click();
+
+            // Make sure that the print dialog is visible
+            ourFrame.dialog().requireVisible();
+
+            //assertThrows(java.awt.print.PrinterException.class, () -> nameList.print());
+            Exception ex = assertThrows(java.awt.print.PrinterException.class, () -> nameList.print());
+
+           /* try {
+                nameList.print();
+            } catch (Exception ex) {
+                assertTrue(ex instanceof java.awt.print.PrinterException);
+            }
+            */
+            fail("Expected exception not thrown");
+
+
+            // Make sure that the print dialog is visible
+
+
+        }catch(EdtViolationException e){
+            System.out.println("Exception caught");
+        }
+    }
+
+    @Test
     public void confirmDialogOnNew() {
-        // Load sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fakeFile
         ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
@@ -523,8 +648,10 @@ public class AddressBookGUITest {
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
-        // Click 'New'
+        // Open menu select file
         ourFrame.menuItem("file").click();
+
+        // Open menu select New
         ourFrame.menuItem("new").click();
 
         // Test that a question message is shown
@@ -533,9 +660,13 @@ public class AddressBookGUITest {
 
     @Test
     public void confirmDialogShowsOnOpen() {
-        // Load sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
         ourFrame.fileChooser().approve();
 
@@ -564,9 +695,13 @@ public class AddressBookGUITest {
 
     @Test
     public void confirmDialogShowsOnQuitConfirm() {
-        // Load sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
         ourFrame.fileChooser().approve();
 
@@ -598,13 +733,20 @@ public class AddressBookGUITest {
 
     @Test
     public void confirmDialogShowsOnWindowCloseCancel() {
-        // Load sample address Book
+        // open with sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fake file
         ourFrame.fileChooser().approve();
 
-        // Click 'Ben Bucker' test person entry and click 'Edit'
+        // Selects 'Ben Bucker' test person entry and click 'Edit'
         ourFrame.table().cell("Ben").click();
         ourFrame.button("edit").click();
 
@@ -630,10 +772,16 @@ public class AddressBookGUITest {
 
     @Test
     public void searchForPerson() {
-        // Load sample address Book
+        //open menu and select file
         ourFrame.menuItem("file").click();
+
+        //menu select open
         ourFrame.menuItem("open").click();
+
+        //opens fake file
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
+
+        //approve fake file
         ourFrame.fileChooser().approve();
 
         //Type 'jan'
@@ -648,7 +796,7 @@ public class AddressBookGUITest {
         //Check only 'Ben' entry shows
         ourFrame.table().requireRowCount(1);
 
-        //Type '12'
+        //Type '44'
         ourFrame.textBox().deleteText().pressAndReleaseKeys(VK_4,VK_4);
 
         //Check both entries show
