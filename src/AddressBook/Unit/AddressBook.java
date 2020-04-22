@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Created by
- * Orignainlly by Ingrid Buckley Jan 2020
+ * Originally by Ingrid Buckley Jan 2020
  * Edited by Ben Fulker and Armand Mohammed
  * This class has a dependency on the Person Class
  */

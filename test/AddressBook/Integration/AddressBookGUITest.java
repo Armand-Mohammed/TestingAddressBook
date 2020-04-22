@@ -862,7 +862,7 @@ public class AddressBookGUITest {
     }
 
     /**
-     * Test that person dialong is confirmed
+     * Test that person dialog is confirmed
      */
     @Test
     public void confirmDialogOnNew() {

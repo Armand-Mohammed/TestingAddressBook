@@ -6,8 +6,9 @@ import java.sql.*;
 
 /**
  * Created by
- * Orignainlly by Ingrid Buckley Jan 2020
+ * Originally by Ingrid Buckley Jan 2020
  * Edited by Ben Fulker and Armand Mohammed
+ * Edited 4/22/20 by Paul Nicowski
  */
 public class FileSystem {
     //This class has dependencies on AddressBook.java, File,
@@ -63,4 +64,20 @@ public class FileSystem {
         //closes connection
         connection.close();
     }
+
+    /**
+     * Deletes an address book file
+     * @param addressBook
+     * @param file
+     * @throws SQLException
+     */
+    public void deleteFile(AddressBook addressBook, File file) throws SQLException {
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+        Statement stmt = connection.createStatement();
+
+        stmt.close();
+        connection.close();
+        boolean result = new File(file.getAbsolutePath()).delete();
+    }
+
 }

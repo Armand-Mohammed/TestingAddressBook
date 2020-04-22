@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by
- * Orignainlly by Ingrid Buckley Jan 2020
+ * Originally by Ingrid Buckley Jan 2020
  * Edited by Ben Fulker and Armand Mohammed
  */
 public class Person {
@@ -141,7 +141,7 @@ public class Person {
     }
 
     /**
-     * Gets feild using a case statement where the switch is based on column number
+     * Gets field using a case statement where the switch is based on column number
      * @param field
      * @return retruns field based on column number
      */

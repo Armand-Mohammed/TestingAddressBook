@@ -8,8 +8,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by
- * Orignainlly by Ingrid Buckley Jan 2020
+ * Originally by Ingrid Buckley Jan 2020
  * Edited by Ben Fulker and Armand Mohammed
+ * Edited 4/22/20 by Paul Nicowski
  */
 public class PersonDialog extends JDialog {
     //Options for person dialog frame
@@ -154,6 +155,17 @@ public class PersonDialog extends JDialog {
         result = Result.CANCEL;
         setVisible(true);
         return result;
+    }
+
+    public Result showEditDialog()
+    {
+        // Default to CANCEL if the user closes the dialog window
+        result = Result.CANCEL;
+        firstName.setEditable(false);
+        lastName.setEditable(false);
+        setVisible(true);
+        return result;
+
     }
 
     //GetPerson method handles input checking on personDialog frame

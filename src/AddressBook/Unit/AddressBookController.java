@@ -6,8 +6,9 @@ import java.sql.SQLException;
 
 /**
  * Created by
- * Orignainlly by Ingrid Buckley Jan 2020
+ * Originally by Ingrid Buckley Jan 2020
  * Edited by Ben Fulker and Armand Mohammed
+ * Edited 4/22/20 by Paul Nicowski
  * This class is used to control interaction between the GUI, person, addressbook, and person Dialog classes.
  * This class has a dependency on addressBook.java class
  */
@@ -75,12 +76,21 @@ public class AddressBookController {
     }
 
     /**
-     * savae address book instance as a sqlite file
+     * save address book instance as a sqlite file
      * @param file
      * @throws SQLException
      */
     public void save(File file) throws SQLException {
         new FileSystem().saveFile(addressBook, file);
+    }
+
+    /**
+     * deletes an address book file
+     * @param file
+     * @throws SQLException
+     */
+    public void delete(File file)  throws SQLException {
+        new FileSystem().deleteFile(addressBook, file);
     }
 
     /**

@@ -20,8 +20,9 @@ import java.util.regex.Pattern;
 
 /**
  * Created by
- * Orignainlly by Ingrid Buckley Jan 2020
+ * Originally by Ingrid Buckley Jan 2020
  * Edited by Ben Fulker and Armand Mohammed
+ * Edited 4/22/20 by Paul Nicowski
  */
 public class AddressBookGUI extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -50,6 +51,7 @@ public class AddressBookGUI extends JFrame {
     private final JMenuItem openItem = new JMenuItem("Open", 'O');
     private final JMenuItem saveItem = new JMenuItem("Save", 'S');
     private final JMenuItem saveAsItem = new JMenuItem("Save As...", 'A');
+    private final JMenuItem deleteAddressBookItem = new JMenuItem("Delete", 'D');
     private final JMenuItem printItem = new JMenuItem("Print", 'P');
     private final JMenuItem quitItem = new JMenuItem("Exit", 'X');
     private final JTextField searchTextField = new JTextField("");
@@ -90,25 +92,36 @@ public class AddressBookGUI extends JFrame {
             }
             controller.clear();
             saveItem.setEnabled(false);
+            deleteAddressBookItem.setEnabled(false);
+            setTitle("Address Book");
         });
         file.add(newItem);
         //End "new" component item
         //creates "open" dropdown item and action listener on GUI item
         openItem.addActionListener(e ->
         {
-            if (saveItem.isEnabled() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this, "Are you sure you want to create a new address book? Any unsaved progress will be lost.", "New Address Book", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-                return;
-            }
             final JFileChooser jfc = new JFileChooser();
             if (JFileChooser.APPROVE_OPTION != jfc.showOpenDialog(this)) {
                 return;
+            }
+            else
+            {
+                // checks if a save is needed after attempting to load an existing
+                // address book
+                if (saveItem.isEnabled() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this, "Are you sure you want to open a new address book? Any unsaved progress will be lost.", "New Address Book", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+                    return;
+                }
             }
             try {
                 controller.open(jfc.getSelectedFile());
                 currentFile = jfc.getSelectedFile();
                 saveItem.setEnabled(false);
+                deleteAddressBookItem.setEnabled(true);
+                setTitle("Address Book - " + currentFile.getName());
+
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error loading file: " + ex.getMessage(), "Open", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error loading file: " +
+                        ex.getMessage(), "Open", JOptionPane.ERROR_MESSAGE);
             }
         });
         file.add(openItem);
@@ -153,10 +166,18 @@ public class AddressBookGUI extends JFrame {
             if (currentFile == null) {
                 return;
             }
+            else
+            {
+                // enables the "delete" item in the drop down menu when
+                // the user has used the "save as" item.
+                    deleteAddressBookItem.setEnabled(true);
+            }
             if (currentFile.exists() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this, "Are you sure you want to overwrite this file?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
                 return;
             }
             saveItem.doClick();
+            // sets title to name of address book
+            setTitle("Address Book - " + currentFile.getName());
         });
         file.add(saveAsItem);
         file.add(new JSeparator());
@@ -170,6 +191,29 @@ public class AddressBookGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Printing failed: " + ex.getMessage(), "Print", JOptionPane.WARNING_MESSAGE);
             }
         });
+        // Adds the ability to delete an address book
+        deleteAddressBookItem.setEnabled(false);
+        deleteAddressBookItem.addActionListener(e ->
+        {
+            try {
+                if (currentFile.exists() && JOptionPane.YES_OPTION ==
+                        JOptionPane.showConfirmDialog(this,
+                                "Are you sure you want to delete this address book?",
+                                "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+                    controller.delete(currentFile);
+                    controller.clear();
+                    setTitle("Address Book");
+
+                }
+            }
+            catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Deletion of Address Book Failed: "
+                        + ex.getMessage(), "Delete", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        file.add(deleteAddressBookItem);
+
+
         file.add(printItem);
         //End 'Print' item component
         file.add(new JSeparator());
@@ -238,7 +282,8 @@ public class AddressBookGUI extends JFrame {
             Person oldPerson = controller.get(index);
             PersonDialog dialog = new PersonDialog(this, oldPerson);
 
-            if (dialog.showDialog() != PersonDialog.Result.OK) {
+            // Doesn't allow the user to edit First and Last Name.
+            if (dialog.showEditDialog() != PersonDialog.Result.OK) {
                 return;
             }
             controller.set(index, dialog.getPerson());
