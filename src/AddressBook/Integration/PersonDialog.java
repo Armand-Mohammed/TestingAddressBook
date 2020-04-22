@@ -170,10 +170,11 @@ public class PersonDialog extends JDialog {
             }
             if(firstName.getText().isBlank()) {
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "The first name can't be empty or null the value will be defaulted to 'x'");
-
+                firstName.setText("x");
             }
             if(lastName.getText().isBlank()) {
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "The last name can't be empty or null the value will be defaulted to 'x'");
+                lastName.setText("x");
             }
 
             return new Person(firstName.getText(),
