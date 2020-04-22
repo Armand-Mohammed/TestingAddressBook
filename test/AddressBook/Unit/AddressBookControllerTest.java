@@ -8,15 +8,21 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * Author: by Ben Fulker and Armand Mohammed
+ * Class has dependencies on AddressBook.java, AddressBookController and Person.jav
+ */
 class AddressBookControllerTest {
 
-    //Arrange
+    //Arrange for all tests
     AddressBook addressBook  = new AddressBook();
     AddressBookController addressBookController = new AddressBookController(addressBook);
     Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
     Person instanceNumTwo = new Person("Ben", "Fulker", "1660 sw Fuck Street", "Fort Myers", "FL", "33317", "9545130066");
 
+    /**
+     * Test if the add method works in the addressBookController class
+     */
     @Test
     void add() {
         //Act
@@ -26,6 +32,9 @@ class AddressBookControllerTest {
         assertEquals(instance, addressBookController.get(0));
     }
 
+    /**
+     * Test if the set method works in the addressBookController class
+     */
     @Test
     void set() {
         //Act
@@ -43,6 +52,9 @@ class AddressBookControllerTest {
 
     }
 
+    /**
+     * Test if the remove method works in the addressBookController class
+     */
     @Test
     void remove() {
         //Act
@@ -55,6 +67,9 @@ class AddressBookControllerTest {
         assertNotEquals(instance, null);
     }
 
+    /**
+     * Test if the get method works in the addressBookController class
+     */
     @Test
     void get() {
         //Act
@@ -66,6 +81,9 @@ class AddressBookControllerTest {
         assertEquals(instance, addressBookController.get(0));
     }
 
+    /**
+     * Test if the clear method works in the addressBookController class
+     */
     @Test
     void clear() {
         //Act
@@ -81,6 +99,9 @@ class AddressBookControllerTest {
         assertEquals(addressBook.getRowCount(), 0);
     }
 
+    /**
+     * Test if the open method works in the addressBookController class
+     */
     @Test
     void open()throws FileNotFoundException, SQLException {
 
@@ -104,6 +125,9 @@ class AddressBookControllerTest {
         assertTrue(canRead);
     }
 
+    /**
+     * Test if the save method works in the addressBookController class
+     */
     @Test
     void save() throws SQLException {
         Throwable exception2 = assertThrows(SQLException.class, () -> {
@@ -116,6 +140,9 @@ class AddressBookControllerTest {
         assertTrue(exists, file.toString());
     }
 
+    /**
+     * Test if the getModel method works in the addressBookController class
+     */
     @Test
     void getModel() {
         assertEquals(addressBookController.getModel(), addressBook);

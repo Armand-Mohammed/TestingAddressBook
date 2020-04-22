@@ -18,6 +18,11 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.regex.Pattern;
 
+/**
+ * Created by
+ * Orignainlly by Ingrid Buckley Jan 2020
+ * Edited by Ben Fulker and Armand Mohammed
+ */
 public class AddressBookGUI extends JFrame {
     private static final long serialVersionUID = 1L;
 

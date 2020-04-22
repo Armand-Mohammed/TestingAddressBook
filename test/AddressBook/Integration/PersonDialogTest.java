@@ -11,6 +11,10 @@ import javax.swing.*;
 
 import static java.awt.event.KeyEvent.*;
 
+/**
+ * Author: by Ben Fulker and Armand Mohammed
+ * Class has dependencies on AddressBook.java, AddressBookController and Person.jav
+ */
 class PersonDialogTest {
 
     @Test

@@ -6,7 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-
+/**
+ * Created by
+ * Orignainlly by Ingrid Buckley Jan 2020
+ * Edited by Ben Fulker and Armand Mohammed
+ */
 public class PersonDialog extends JDialog {
     //Options for person dialog frame
     public enum Result {

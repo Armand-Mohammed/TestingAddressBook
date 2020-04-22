@@ -8,6 +8,10 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Author: by Ben Fulker and Armand Mohammed
+ * Class has dependencies on AddressBook.java, AddressBookController and Person.jav
+ */
 public class FileSystemTest {
 
     //Arrange
@@ -16,8 +20,11 @@ public class FileSystemTest {
     Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
     Person instanceNumTwo = new Person("Ben", "Fulker", "1660 sw Fuck Street", "Fort Myers", "FL", "33317", "9545130066");
 
+    /**
+     * This test checks that the exception is thrown when file doesn't exist
+     */
     @Test
-    public void readDeletedFile() {
+    public void readDeletedFileThrowFileNotFoundException() {
 
         FileSystem fileSystem = new FileSystem();
         File file = new File("Address Book");
@@ -30,6 +37,9 @@ public class FileSystemTest {
          assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook, file));
     }
 
+    /**
+     * This test checks to see if file is readable
+     */
     @Test
     void readFile() {
 
@@ -48,9 +58,9 @@ public class FileSystemTest {
         });
        // Files.deleteIfExists(Paths.get("Address Book");
         File file = new File("Address Book");
+
+        //Assert
         assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
-
-
         assertDoesNotThrow(() -> fileSystem.readFile(addressBook,file));
         assertTrue(addressBook.getRowCount()==2);
 
@@ -61,16 +71,23 @@ public class FileSystemTest {
         assertTrue(canRead);
     }
 
+    /**
+     * This test checks if a file is actually saved
+     */
     @Test
     void saveFile(){
+        //Arrange
         FileSystem fileSystem = new FileSystem();
+
+        //Act
         Throwable exception2 = assertThrows(SQLException.class, () -> {
             throw new SQLException("SQL message");
         });
         File file = new File("Address Book2");
+
+        //Assert
         assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
         //fileSystem.saveFile(addressBook,file);
-
         boolean exists = file.exists();
         assertTrue(exists, file.toString());
     }

@@ -4,6 +4,12 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by
+ * Orignainlly by Ingrid Buckley Jan 2020
+ * Edited by Ben Fulker and Armand Mohammed
+ * This class has a dependency on the Person Class
+ */
 public class AddressBook extends AbstractTableModel {
     //persons list creates a list of people stored as an arrayList
     private List<Person> persons = new ArrayList<>();

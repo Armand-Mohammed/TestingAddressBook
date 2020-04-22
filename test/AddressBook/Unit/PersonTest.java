@@ -4,59 +4,90 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Authored by Ben Fulker and Armand Mohammed
+ * This class has dependencies on the Person Class.
+ */
 class PersonTest {
 
-    //Arrange
+    //Arrange for all test in class
     Person instance = new Person("Armand", "Mohammed", "1660 sw 48th ave", "Fort Myers", "FL", "33317", "9545130066");
 
+    /**
+     * Tests if getFirstName method in the peron class works
+     */
     @Test
     void getFirstName() {
         //Assert
         Assertions.assertEquals("Armand",instance.getFirstName());
     }
 
+    /**
+     * Tests if getLastName method method in the peron class works
+     */
     @Test
     void getLastName() {
         //Assert
         Assertions.assertEquals("Mohammed",instance.getLastName());
     }
 
+    /**
+     * Tests if getAddress method in the peron class works
+     */
     @Test
     void getAddress() {
         //Assert
         Assertions.assertEquals("1660 sw 48th ave", instance.getAddress());
     }
 
+    /**
+     * Tests if getCity method in the peron class works
+     */
     @Test
     void getCity() {
         //Assert
         Assertions.assertEquals("Fort Myers", instance.getCity());
     }
 
+    /**
+     * Tests if getState method in the peron class works
+     */
     @Test
     void getState() {
         //Assert
         Assertions.assertEquals("FL", instance.getState());
     }
 
+    /**
+     * Tests if getZip method in the peron class works
+     * */
     @Test
     void getZip() {
         //Assert
         Assertions.assertEquals("33317", instance.getZip());
     }
 
+    /**
+     * Tests if getPhone method in the peron class works
+     */
     @Test
     void getPhone() {
         //Assert
         Assertions.assertEquals("9545130066", instance.getPhone());
     }
 
+    /**
+     * Tests if our overriden toString method in the peron class works
+     */
     @Test
     void toStringTest() {
         //Assert
         Assertions.assertEquals( "Mohammed, Armand",instance.toString());
     }
 
+    /**
+     * Tests if containString method in the peron class works
+     */
     @Test
     void containsString() {
         //Act
@@ -77,6 +108,9 @@ class PersonTest {
         assertTrue(phone);
     }
 
+    /**
+     * Tests if getField method in the peron class works
+     */
     @Test
     void getField() {
         //Arrange
@@ -103,6 +137,9 @@ class PersonTest {
         assertEquals("Field number out of bounds",exception.getMessage());
     }
 
+    /**
+     * Tests if isLetters method in the peron class works
+     */
     @Test
     void isLetters() {
         //Arrange
@@ -114,6 +151,9 @@ class PersonTest {
         assertTrue(actual.matches("[a-zA-Z]+"));
     }
 
+    /**
+     * Tests if isLetters doesn't work for numbers
+     */
     @Test
     void isLettersFalse() {
         //Arrange
@@ -126,6 +166,9 @@ class PersonTest {
         assertNotSame(actual, expected);
     }
 
+    /**
+     * Tests if isNumber method in the peron class works
+     */
     @Test
     void isNumbers() {
         //Arrange
@@ -136,84 +179,102 @@ class PersonTest {
         //Assert
         assertTrue(actual.matches("^[0-9]*$"));
     }
+    //tests that numbers can't be placed in firstName field
     @Test
     void personFirstNamePassesStringRegexNegativeTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("1Ben","fulker","my address","fort myers", "FL","39388","9876543210"));
     }
+    //tests that "" can't be placed in firstName field
     @Test
     void personFirstNameEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("","fulker","my address","fort myers", "FL","39388","9876543210"));
     }
+    //tests that null value can't be placed in firstName field
     @Test
     void personFirstNameNullTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person(null,"fulker","my address","fort myers", "FL","39388","9876543210"));
     }
+    //tests that numbers can't be placed in lastName field
     @Test
     void personLastNamePassesStringRegexNegativeTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","1fulker","my address","fort myers", "FL","39388","9876543210"));
     }
+    //tests that "" can't be placed in lastName field
     @Test
     void personLastNameEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","","my address","fort myers", "FL","39388","9876543210"));
     }
+    //tests that null value can't be placed in lastName field
     @Test
     void personLastNameNullTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben",null,"my address","fort myers", "FL","39388","9876543210"));
     }
+    //tests that a null value can't be placed in address field
     @Test
     void personAddressNullTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker",null,"fort myers", "FL","39388","9876543210"));
     }
+    //tests that "" can't ""be placed in address field
     @Test
     void personAddressEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","Fulker","","fort myers", "FL","39388","9876543210"));
     }
-
+    //tests that numbers can't be placed in city field
     @Test
     void personCityPassesStringRegexNegativeTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker","my address","1fort myers", "FL","A9388","9876543210"));
     }
+    //tests that "" can't ""be placed in city field
     @Test
     void personCityEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","jhglj","my address","", "FL","","9876543210"));
     }
+    //tests that a null value can't be placed in city field
     @Test
     void personCityNullTest(){
         assertThrows(NullPointerException.class, () -> new Person("Ben","fulker","my address",null, "FL","98494","9876543210"));
     }
+    //tests that numbers can't be placed in state field
     @Test
     void personStatePassesStringRegexNegativeTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker","my address","fort myers", "1L","A9388","9876543210"));
     }
+    //tests that "" can't ""be placed in state field
     @Test
     void personStateEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker","my address","fort My", "","55555","9876543210"));
     }
+    //tests that a null value can't be placed in state field
     @Test
     void personStateNullTest(){
         assertThrows(NullPointerException.class, () -> new Person("Ben","fulker","my address","Fort My", null,"98494","9876543210"));
     }
-
+    //tests that only numbers can be placed in zip field
     @Test
     void personZipPassesStringRegexNegativeTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker","my address","fort myers", "FL","A9388","9876543210"));
     }
+    //tests that "" can't ""be placed in zip field
     @Test
     void personZipEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","Fulker","my address","fort myers", "FL","","9876543210"));
     }
+    //tests that a null value can't be placed in zip field
     @Test
     void personZipNullTest(){
         assertThrows(NullPointerException.class, () -> new Person("Ben","fulker","my address","fort myers", "FL",null,"9876543210"));
     }
+    //tests that only numbers can be placed in phone field
     @Test
     void personPhonePassesStringRegexNegativeTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fulker","my address","fort myers", "FL","49388","AAA6543210"));
     }
+    //tests that "" can't ""be placed in phone field
     @Test
     void personPhoneEmptyTest(){
         assertThrows(IllegalArgumentException.class, () -> new Person("Ben","fjldl","my address","fort myers", "FL","45555",""));
     }
+    //tests that a null value can't be placed in phone field
     @Test
     void personPhoneNullTest(){
         assertThrows(NullPointerException.class, () -> new Person("Ben","fulker","my address","fort myers", "FL","39487",null));

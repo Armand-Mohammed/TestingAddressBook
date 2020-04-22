@@ -29,14 +29,24 @@ import static java.awt.event.KeyEvent.*;
 import static org.assertj.swing.finder.WindowFinder.findFrame;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Author: by Ben Fulker and Armand Mohammed
+ * Class has dependencies on AddressBook.java, AddressBookController and Person.jav
+ */
 //This will only work on Windows PC and not on MAC OSX
 public class AddressBookGUITest {
 
+    /**
+     * Creates rules for each test
+     */
     @Rule
     public static TemporaryFolder tempFolder = new TemporaryFolder();
     private static File fakeFile = null;
     private static FrameFixture ourFrame = null;
 
+    /**
+     * does before all test
+     */
     @BeforeAll
     public static void init() {
         //Prevent program exiting
@@ -46,6 +56,11 @@ public class AddressBookGUITest {
         FailOnThreadViolationRepaintManager.install();
     }
 
+    /**
+     *  does before each test
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     @BeforeEach
     public void initEach() throws IOException, ClassNotFoundException {
         // Initialize window
@@ -86,18 +101,22 @@ public class AddressBookGUITest {
         }
     }
 
-    // Close assertJ ourFrame gui
+    // Close assertJ ourFrame gui after each test
     @AfterEach
     public void cleanEach() {
         ourFrame.cleanUp();
     }
 
+    /**
+     * uninstallls security manager after all tests complete
+     */
     @AfterAll
     public static void clean() {
         //Re-enable program to close after testing completes
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
     }
 
+    //tests that the state of Save and SaveAs are the same
     @Test
     public void checkStateOfSaveAndSaveAs() {
         //Act
@@ -107,6 +126,10 @@ public class AddressBookGUITest {
         //Assert enabled state is the same
         assertEquals(save, saveAs);
     }
+
+    /**
+     * Test that a new person can be created via the AddressBookGUI.java
+     */
     @Test
     public void createsNewPerson() {
         // Click and get dialog window
@@ -146,6 +169,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(1);
     }
 
+    /**
+     * Test that a new person can't be created when Zip has non numbers in it
+     */
     @Test
     public void tryToCreateNewPersonWithBadZip() {
         // Click and get dialog window
@@ -185,6 +211,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(0);
     }
 
+    /**
+     * Test that a new person can't be created when Phone has non numbers in it
+     */
     @Test
     public void tryToCreateNewPersonWithBadPhoneNumber() {
         // Click and get dialog window
@@ -226,6 +255,9 @@ public class AddressBookGUITest {
        //  dialog.button(JButtonMatcher.withText("OK")).click();
     }
 
+    /**
+     * Test that a new person can't be created when firstName is "" in it
+     */
     @Test
     public void tryToCreateNewPersonWithBadFirstName() {
         // Click and get dialog window
@@ -266,6 +298,9 @@ public class AddressBookGUITest {
        // dialog.button(JButtonMatcher.withText("OK")).click();
     }
 
+    /**
+     * Test that a new person can't be created when lastName is "" in it
+     */
     @Test
     public void tryToCreateNewPersonWithBadLastName() {
         // Click and get dialog window
@@ -306,6 +341,9 @@ public class AddressBookGUITest {
        // dialog.button(JButtonMatcher.withText("OK")).click();
     }
 
+    /**
+     * Test that an esisting person can be edited
+     */
     @Test
     public void editsPerson() {
         //open with sample address Book
@@ -365,6 +403,9 @@ public class AddressBookGUITest {
                 });
     }
 
+    /**
+     * Test that an exsisting person can be deleted
+     */
     @Test
     public void canDeletePerson() {
         // select file from menu
@@ -392,6 +433,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(2);
     }
 
+    /**
+     * Test that user can click cancel buttong when trying to create a new person
+     */
     @Test
     public void canCreateNewPersonCancelled() {
         // Click and get dialog window
@@ -409,6 +453,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(0);
     }
 
+    /**
+     * Test that user can click cancel buttong when trying to edit an existing person
+     */
     @Test
     public void canEditPersonCancelled() {
         // open with sample address Book
@@ -448,6 +495,9 @@ public class AddressBookGUITest {
     }
     //"('Paul', 'Bucker', '1111 Up Street', 'his city', 'FL', '22222', '1234567890')"
 
+    /**
+     * Test that user can click edit button when no row is selected and nothing happens
+     */
     @Test
     public void canEditPersonNoRowSelected() {
         // open with sample address Book
@@ -471,6 +521,9 @@ public class AddressBookGUITest {
         ourFrame.button("edit").requireFocused();
     }
 
+    /**
+     * Test that user can click delete button when no row is selected and nothing happens
+     */
     @Test
     public void canDeletePersonNoRowSelected() {
         // Click 'open' item
@@ -496,6 +549,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(3);
     }
 
+    /**
+     * Test that user can create a new address book
+     */
     @Test
     public void canStartNewAddressBook() {
         // Check that new item is clickable
@@ -536,6 +592,9 @@ public class AddressBookGUITest {
         fakeFile.delete();
     }
 
+    /**
+     * Tests that user can open an existing addressbook
+     */
     @Test
     public void canOpenExistingAddressBook() {
         // Check that open item is clickable
@@ -561,6 +620,9 @@ public class AddressBookGUITest {
         checkStateOfSaveAndSaveAs();
     }
 
+    /**
+     * test that user can click cancel when opening an existing address book
+     */
     @Test
     public void canOpenExistingAddressBookCancelled() {
         // Check that open item is clickable
@@ -578,6 +640,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(0);
     }
 
+    /**
+     * Test user can save current address book over an existing address book
+     */
     @Test
     public void canSaveNewAddressBookOverAnother() {
         //Add a person to a new book
@@ -629,6 +694,10 @@ public class AddressBookGUITest {
         ourFrame.optionPane().requireQuestionMessage();
     }
 
+    /**
+     * Test that a user can save the changes made to an existing address book
+     * @throws IOException
+     */
     @Test
     public void saveAddressBookAfterEdit() throws IOException {
         // open with sample address Book
@@ -673,6 +742,10 @@ public class AddressBookGUITest {
         assertTrue(file.exists());
     }
 
+    /**
+     * Test that user can cancel save after an edit
+     * @throws IOException
+     */
     @Test
     public void canSaveEditedAddressBookCancelled() throws IOException {
         // open with sample address Book
@@ -711,6 +784,9 @@ public class AddressBookGUITest {
         assertFalse(file.exists());
     }
 
+    /**
+     * test user can print the address book
+     */
     @Test
     public void printsTheAddressBook() {
         //open menu and select file
@@ -733,6 +809,9 @@ public class AddressBookGUITest {
         ourFrame.dialog().requireVisible();
     }
 
+    /**
+     * test that and print exception can be thrown
+     */
     @Test
     public void printException(){
         try {
@@ -782,6 +861,9 @@ public class AddressBookGUITest {
         }
     }
 
+    /**
+     * Test that person dialong is confirmed
+     */
     @Test
     public void confirmDialogOnNew() {
         //open menu and select file
@@ -821,6 +903,9 @@ public class AddressBookGUITest {
         ourFrame.optionPane().requireQuestionMessage();
     }
 
+    /**
+     * tests person dialog show on open
+     */
     @Test
     public void confirmDialogShowsOnOpen() {
         //open menu and select file
@@ -856,6 +941,9 @@ public class AddressBookGUITest {
         ourFrame.optionPane().requireQuestionMessage();
     }
 
+    /**
+     * test confirm dialog show on quit
+     */
     @Test
     public void confirmDialogShowsOnQuitConfirm() {
         //open menu and select file
@@ -894,6 +982,9 @@ public class AddressBookGUITest {
         ourFrame.optionPane().buttonWithText("Yes").click();
     }
 
+    /**
+     * tests person dialog show when canceled or window is closed
+     */
     @Test
     public void confirmDialogShowsOnWindowCloseCancel() {
         // open with sample address Book
@@ -933,6 +1024,9 @@ public class AddressBookGUITest {
         ourFrame.optionPane().buttonWithText("No").click();
     }
 
+    /**
+     * Tests that user can search for a person in search box
+     */
     @Test
     public void searchForPerson() {
         //open menu and select file
@@ -966,6 +1060,9 @@ public class AddressBookGUITest {
         ourFrame.table().requireRowCount(2);
     }
 
+    /**
+     * Test that the save function is diabled when no change or no entries in current address book
+     */
     @Test
     public void saveIsDisabledOnStartUp() {
         // Check if saving is disabled
@@ -975,6 +1072,10 @@ public class AddressBookGUITest {
         checkStateOfSaveAndSaveAs();
     }
 
+    /**
+     * Test that the program loads
+     * @throws ClassNotFoundException
+     */
     @Test
     public void programLoads() throws ClassNotFoundException {
         //Get robot
