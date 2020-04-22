@@ -20,25 +20,24 @@ import java.util.regex.Pattern;
 
 public class AddressBookGUI extends JFrame {
     private static final long serialVersionUID = 1L;
-    public boolean isNumbers(String name) {
-        return name.matches("^[0-9]*$");
-    }
+
+    //Shows GUI
     private static void createAndShowGUI() {
-        AddressBook addressBook = new AddressBook();
-        AddressBookController controller = new AddressBookController(addressBook);
         AddressBookGUI gui = new AddressBookGUI();
         gui.setVisible(true);
     }
 
+    //Main Function required by JDC call createAndShowGUI()
     public static void main(String[] args) throws ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
         SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
 
-    private final AddressBook addressBook = new AddressBook();;
+    //Organize properties for GUI and addressbook
+    private final AddressBook addressBook = new AddressBook();
     private final AddressBookController controller = new AddressBookController(addressBook);
     private final JTable nameList = new JTable(addressBook);
-    private final TableRowSorter<AddressBook> tableRowSorter = new TableRowSorter<>(addressBook);;
+    private final TableRowSorter<AddressBook> tableRowSorter = new TableRowSorter<>(addressBook);
     private final JButton addButton = new JButton("Add...");
     private final JButton editButton = new JButton("Edit...");
     private final JButton deleteButton = new JButton("Delete");
@@ -52,6 +51,7 @@ public class AddressBookGUI extends JFrame {
 
     private File currentFile = null;
 
+    //AddressBook Method create GUI components and adds them to the GUI
     public AddressBookGUI() {
         // Arrange the window controls
         nameList.setRowSorter(tableRowSorter);
@@ -72,10 +72,12 @@ public class AddressBookGUI extends JFrame {
         quitItem.setName("quit");
         searchTextField.setName("search");
 
+        //Creates File drop down Menu and set action listener on File menu
         JMenuBar menuBar = new JMenuBar();
         JMenu file = new JMenu("File");
         file.setName("file");
         file.setMnemonic('F');
+        //creates "new" dropdown item and action listener on GUI item
         newItem.addActionListener(e ->
         {
             if (saveItem.isEnabled() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this, "Are you sure you want to create a new address book? Any unsaved progress will be lost.", "New Address Book", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -85,6 +87,8 @@ public class AddressBookGUI extends JFrame {
             saveItem.setEnabled(false);
         });
         file.add(newItem);
+        //End "new" component item
+        //creates "open" dropdown item and action listener on GUI item
         openItem.addActionListener(e ->
         {
             if (saveItem.isEnabled() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this, "Are you sure you want to create a new address book? Any unsaved progress will be lost.", "New Address Book", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -103,6 +107,8 @@ public class AddressBookGUI extends JFrame {
             }
         });
         file.add(openItem);
+        //end "open" component part
+        //creates "save" dropdown item and action listener on GUI item
         saveItem.setEnabled(false);
         saveItem.addActionListener(e ->
         {
@@ -119,6 +125,7 @@ public class AddressBookGUI extends JFrame {
             }
         });
 
+        //"save" dropdown item and change listener on GUI item
         saveItem.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -128,6 +135,9 @@ public class AddressBookGUI extends JFrame {
         });
         saveAsItem.setEnabled(false);
         file.add(saveItem);
+        //end 'Save" component
+
+        //creates "saveAs" dropdown item and action listener on GUI item
         saveAsItem.addActionListener(e ->
         {
             final JFileChooser jfc = new JFileChooser();
@@ -145,6 +155,8 @@ public class AddressBookGUI extends JFrame {
         });
         file.add(saveAsItem);
         file.add(new JSeparator());
+        //end 'saveAs' component code
+        //creates "print" dropdown item and action listener on GUI item
         printItem.addActionListener(e ->
         {
            try {
@@ -154,11 +166,15 @@ public class AddressBookGUI extends JFrame {
             }
         });
         file.add(printItem);
+        //End 'Print' item component
         file.add(new JSeparator());
+        //creates "quit" dropdown item and action listener on GUI item
         quitItem.addActionListener(al -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         file.add(quitItem);
         menuBar.add(file);
         menuBar.add(new JSeparator());
+        //end 'quit' component
+        //creates "Search" box component of GUI
         menuBar.add(new JLabel("Search: "));
         searchTextField.setMaximumSize(new Dimension(15000, 50));
         searchTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -180,14 +196,15 @@ public class AddressBookGUI extends JFrame {
             }
 
             public void filter() {
-
+                //Filter for finding patterns that match the search box
                 tableRowSorter.setRowFilter(RowFilter.regexFilter("(?iu)" + Pattern.quote(searchTextField.getText())));
             }
         });
         menuBar.add(searchTextField);
-
-
+        //End search component
+        //Creates panel for Add, Edit, Delete JButtons
         JPanel addEditDelPanel = new JPanel();
+        //Creates 'add' button component to the GUI
         addButton.setMnemonic('A');
         addButton.addActionListener(e ->
         {
@@ -201,6 +218,9 @@ public class AddressBookGUI extends JFrame {
             saveItem.setEnabled(true);
         });
         addEditDelPanel.add(addButton);
+        //End 'add' Button component
+
+        //Creates 'edit' button component
         editButton.setMnemonic('E');
         editButton.addActionListener(e -> {
             int selectedRow = nameList.getSelectedRow();
@@ -220,6 +240,9 @@ public class AddressBookGUI extends JFrame {
             saveItem.setEnabled(true);
         });
         addEditDelPanel.add(editButton);
+        //End 'edit' button component
+
+        //Creates 'delete' button component
         deleteButton.setMnemonic('D');
         deleteButton.addActionListener(e -> {
             int selectedRow = nameList.getSelectedRow();
@@ -230,7 +253,7 @@ public class AddressBookGUI extends JFrame {
             saveItem.setEnabled(true);
         });
         addEditDelPanel.add(deleteButton);
-
+        //End 'delete' button component
         // Bottom area
         JPanel panelPanel = new JPanel(new BorderLayout());
         panelPanel.add(addEditDelPanel, BorderLayout.LINE_START);
@@ -240,8 +263,12 @@ public class AddressBookGUI extends JFrame {
         // Set window parameters
         setSize(800, 600);
         setLocationByPlatform(true);
+
+        //Sets GUI title
         setTitle("Address Book");
+        //Sets the menubar on the GUI
         setJMenuBar(menuBar);
+        //Creates window listener
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
