@@ -1,4 +1,6 @@
-package AddressBook;
+package AddressBook.Integration;
+
+import AddressBook.Unit.Person;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +21,9 @@ public class PersonDialog extends JDialog {
     private JTextField state;
     private JTextField zip;
     private JTextField phone;
-
+    private boolean isNumbers(String name) {
+        return name.matches("^[0-9]*$");
+    }
     public PersonDialog(Frame parent) {
 
         super(parent);
@@ -90,8 +94,9 @@ public class PersonDialog extends JDialog {
         okButton.setMnemonic('O');
         okButton.addActionListener(e ->
         {
-            result = Result.OK;
-            setVisible(false);
+                result = Result.OK;
+                setVisible(false);
+
         });
         buttons.add(okButton);
         JButton cancelButton = new JButton("Cancel");
@@ -137,15 +142,16 @@ public class PersonDialog extends JDialog {
 
     public Person getPerson() {
 
-            return new Person(firstName.getText(),
+           /* return new Person(firstName.getText(),
                     lastName.getText(),
                     address.getText(),
                     city.getText(),
                     state.getText(),
                     zip.getText(),
                     phone.getText());
+*/
 
-       /* if (firstName != null && lastName != null && !firstName.getText().isEmpty() && !lastName.getText().isEmpty()) {
+        if (firstName != null && lastName != null && !firstName.getText().isEmpty() && !lastName.getText().isEmpty() && isNumbers(zip.getText()) && isNumbers(phone.getText())) {
             return new Person(firstName.getText(),
                     lastName.getText(),
                     address.getText(),
@@ -154,7 +160,29 @@ public class PersonDialog extends JDialog {
                     zip.getText(),
                     phone.getText());
         } else {
-            return null;
-        }*/
+            if(!isNumbers(zip.getText())) {
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Your Zip was invalid accepts numbers only the value will be defaulted to '0'");
+                zip.setText("0");
+            }
+            if(!isNumbers(phone.getText())) {
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Your Phone input was invalid numbers only value will be default to '0'");
+                phone.setText("0");
+            }
+            if(firstName.getText().isBlank()) {
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "The first name can't be empty or null the value will be defaulted to 'x'");
+
+            }
+            if(lastName.getText().isBlank()) {
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "The last name can't be empty or null the value will be defaulted to 'x'");
+            }
+
+            return new Person(firstName.getText(),
+                    lastName.getText(),
+                    address.getText(),
+                    city.getText(),
+                    state.getText(),
+                    zip.getText(),
+                    phone.getText());
+        }
     }
 }

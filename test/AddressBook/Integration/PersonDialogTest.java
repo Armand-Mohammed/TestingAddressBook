@@ -1,4 +1,4 @@
-package AddressBook;
+package AddressBook.Integration;
 
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
@@ -64,4 +64,5 @@ class PersonDialogTest {
         // Uninstall NoExistSecurityManager to enable program to close after test runs
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
     }
+
 }

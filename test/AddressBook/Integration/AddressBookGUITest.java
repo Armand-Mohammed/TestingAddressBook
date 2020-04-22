@@ -1,6 +1,9 @@
-package AddressBook;
+package AddressBook.Integration;
 
 
+import AddressBook.Unit.AddressBook;
+import AddressBook.Unit.AddressBookController;
+import AddressBook.Unit.Person;
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.core.matcher.JButtonMatcher;
@@ -144,6 +147,166 @@ public class AddressBookGUITest {
     }
 
     @Test
+    public void tryToCreateNewPersonWithBadZip() {
+        // Click and get dialog window
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
+
+        //Robot type firstName Ben in text box
+        dialog.textBox("firstName")
+                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_E, VK_N);
+
+        //Robot type lastName Bucker in text box
+        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_U, VK_C,VK_K, VK_E, VK_R);
+
+        //Robot type address 4444 Down Street in text box
+        dialog.textBox("address").pressAndReleaseKeys(VK_4, VK_4, VK_4, VK_4, VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_W, VK_N)
+                .pressAndReleaseKeys(VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+
+        //Robot type city "my city" in text box
+        dialog.textBox("city").pressAndReleaseKeys(VK_M, VK_Y,VK_SPACE, VK_C, VK_I, VK_T, VK_Y);
+
+        //Robot type state "FL" text box
+        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+
+        //Robot type zip "33333" in text box
+        dialog.textBox("zip").pressAndReleaseKeys(VK_W, VK_W);
+
+        //Robot type phone "0987654321" in text box
+        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test person is added
+        ourFrame.table().requireRowCount(0);
+    }
+
+    @Test
+    public void tryToCreateNewPersonWithBadPhoneNumber() {
+        // Click and get dialog window
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
+
+        //Robot type firstName Ben in text box
+        dialog.textBox("firstName")
+                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_E, VK_N);
+
+        //Robot type lastName Bucker in text box
+        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_U, VK_C,VK_K, VK_E, VK_R);
+
+        //Robot type address 4444 Down Street in text box
+        dialog.textBox("address").pressAndReleaseKeys(VK_4, VK_4, VK_4, VK_4, VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_W, VK_N)
+                .pressAndReleaseKeys(VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+
+        //Robot type city "my city" in text box
+        dialog.textBox("city").pressAndReleaseKeys(VK_M, VK_Y,VK_SPACE, VK_C, VK_I, VK_T, VK_Y);
+
+        //Robot type state "FL" text box
+        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+
+        //Robot type zip "33333" in text box
+        dialog.textBox("zip").pressAndReleaseKeys(VK_3, VK_3, VK_3, VK_3, VK_3);
+
+        //Robot type phone "0987654321" in text box
+        dialog.textBox("phone").pressAndReleaseKeys(VK_H);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test person is added
+        ourFrame.table().requireRowCount(0);
+
+        dialog.button(JButtonMatcher.withText("OK")).click();
+    }
+
+    @Test
+    public void tryToCreateNewPersonWithBadFirstName() {
+        // Click and get dialog window
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
+
+        //Robot type firstName Ben in text box
+        dialog.textBox("firstName")
+                .pressAndReleaseKeys(VK_SPACE).pressAndReleaseKeys(VK_BACK_SPACE);
+
+        //Robot type lastName Bucker in text box
+        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_U, VK_C,VK_K, VK_E, VK_R);
+
+        //Robot type address 4444 Down Street in text box
+        dialog.textBox("address").pressAndReleaseKeys(VK_4, VK_4, VK_4, VK_4, VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_W, VK_N)
+                .pressAndReleaseKeys(VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+
+        //Robot type city "my city" in text box
+        dialog.textBox("city").pressAndReleaseKeys(VK_M, VK_Y,VK_SPACE, VK_C, VK_I, VK_T, VK_Y);
+
+        //Robot type state "FL" text box
+        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+
+        //Robot type zip "33333" in text box
+        dialog.textBox("zip").pressAndReleaseKeys(VK_3, VK_3, VK_3, VK_3, VK_3);
+
+        //Robot type phone "0987654321" in text box
+        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test person is added
+        ourFrame.table().requireRowCount(0);
+        dialog.button(JButtonMatcher.withText("OK")).click();
+    }
+
+    @Test
+    public void tryToCreateNewPersonWithBadLastName() {
+        // Click and get dialog window
+        ourFrame.button("add").click();
+        DialogFixture dialog = ourFrame.dialog();
+
+        //Robot type firstName Ben in text box
+        dialog.textBox("firstName")
+                .pressKey(VK_SHIFT).pressAndReleaseKeys(VK_B).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_E, VK_N);
+
+
+        //Robot type lastName blank in text box
+        dialog.textBox("lastName").pressAndReleaseKeys(VK_SPACE).pressAndReleaseKeys(VK_BACK_SPACE);
+
+        //Robot type address 4444 Down Street in text box
+        dialog.textBox("address").pressAndReleaseKeys(VK_4, VK_4, VK_4, VK_4, VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_W, VK_N)
+                .pressAndReleaseKeys(VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+
+        //Robot type city "my city" in text box
+        dialog.textBox("city").pressAndReleaseKeys(VK_M, VK_Y,VK_SPACE, VK_C, VK_I, VK_T, VK_Y);
+
+        //Robot type state "FL" text box
+        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+
+        //Robot type zip "33333" in text box
+        dialog.textBox("zip").pressAndReleaseKeys(VK_3, VK_3, VK_3, VK_3, VK_3);
+
+        //Robot type phone "0987654321" in text box
+        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test person is added
+        ourFrame.table().requireRowCount(0);
+        dialog.button(JButtonMatcher.withText("OK")).click();
+    }
+
+    @Test
     public void editsPerson() {
         //open with sample address Book
         //open menu and select file
@@ -259,7 +422,7 @@ public class AddressBookGUITest {
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());
 
         //approve fakeFile
-        ourFrame.fileChooser().approve();;
+        ourFrame.fileChooser().approve();
 
         // Click 'Ben Bucker' test person entry and click 'Edit'
         ourFrame.table().cell("Ben").click();

@@ -1,5 +1,4 @@
-package AddressBook;
-import AddressBook.Person;
+package AddressBook.Unit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

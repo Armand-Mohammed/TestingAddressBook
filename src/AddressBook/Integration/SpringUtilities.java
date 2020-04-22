@@ -1,4 +1,6 @@
-package AddressBook;
+package AddressBook.Integration;
+
+import AddressBook.AddressBook;
 
 import javax.swing.*;
 import java.awt.*;

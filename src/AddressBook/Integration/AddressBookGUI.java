@@ -1,5 +1,10 @@
-package AddressBook;//package GUI;
+package AddressBook.Integration;//package GUI;
 
+
+import AddressBook.Unit.AddressBook;
+import AddressBook.Unit.AddressBookController;
+import AddressBook.Unit.FileSystem;
+import AddressBook.Unit.Person;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -15,7 +20,9 @@ import java.util.regex.Pattern;
 
 public class AddressBookGUI extends JFrame {
     private static final long serialVersionUID = 1L;
-
+    public boolean isNumbers(String name) {
+        return name.matches("^[0-9]*$");
+    }
     private static void createAndShowGUI() {
         AddressBook addressBook = new AddressBook();
         AddressBookController controller = new AddressBookController(addressBook);
@@ -185,9 +192,11 @@ public class AddressBookGUI extends JFrame {
         addButton.addActionListener(e ->
         {
             PersonDialog dialog = new PersonDialog(this);
-            if (dialog.showDialog() != PersonDialog.Result.OK || dialog.getPerson() == null) {
+
+            if (dialog.showDialog() != PersonDialog.Result.OK || dialog.getPerson() == null ) {
                 return;
             }
+
             controller.add(dialog.getPerson());
             saveItem.setEnabled(true);
         });
@@ -203,6 +212,7 @@ public class AddressBookGUI extends JFrame {
             int index = nameList.convertRowIndexToModel(selectedRow);
             Person oldPerson = controller.get(index);
             PersonDialog dialog = new PersonDialog(this, oldPerson);
+
             if (dialog.showDialog() != PersonDialog.Result.OK) {
                 return;
             }

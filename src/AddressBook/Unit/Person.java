@@ -1,4 +1,4 @@
-package AddressBook;
+package AddressBook.Unit;
 
 import java.util.regex.Pattern;
 
@@ -18,6 +18,7 @@ public class Person {
 
     public Person(String firstName, String lastName, String address, String city, String state, String zip, String phone)throws IllegalArgumentException {
 
+
             if (firstName == null || firstName.isEmpty())
                 throw new IllegalArgumentException("First name cannot be empty");
 
@@ -30,8 +31,11 @@ public class Person {
             if (!isLetters(lastName))
                 throw new IllegalArgumentException("Please, only use letters");
 
-            if (!isNumbers(zip))
+            if (!isNumbers(zip)) {
+                //JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "zip must be numbers");
+
                 throw new IllegalArgumentException("Please, only use numbers");
+            }
 
             if (!isNumbers(phone))
                 throw new IllegalArgumentException("Please, only use numbers");

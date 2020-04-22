@@ -1,4 +1,4 @@
-package AddressBook;
+package AddressBook.Unit;
 
 import java.io.File;
 import java.io.FileNotFoundException;

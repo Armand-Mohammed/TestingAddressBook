@@ -1,4 +1,4 @@
-package AddressBook;
+package AddressBook.Unit;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -63,6 +63,11 @@ public class AddressBook extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int row, int column) {
+        /*try {
+            return persons.get(row).getField(column);
+        }catch(NullPointerException e){
+            System.out.println("null pointer: " + "\n" + e);
+        }*/
         return persons.get(row).getField(column);
     }
 
