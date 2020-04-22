@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressBook extends AbstractTableModel {
+    //persons list creates a list of people stored as an arrayList
     private List<Person> persons = new ArrayList<>();
 
+    //create a person array size of persons list and returns it
     public Person[] getPersons() {
         return persons.toArray(new Person[persons.size()]);
     }
 
+    /**
+     * Adds a person to the address book has a dependency on Person class
+     * @param p
+     */
     public void add(Person p) {
         int newIndex = persons.size();
         persons.add(p);
@@ -28,13 +34,20 @@ public class AddressBook extends AbstractTableModel {
         fireTableRowsUpdated(index, index);
     }
 
-
+    /**
+     * Removes a person from the addressBook
+     * @param index
+     */
     public void remove(int index) {
         persons.remove(index);
         fireTableRowsDeleted(index, index);
     }
 
-
+    /**
+     * gets person from addressBook based on index location in persons arrayList
+     * @param index
+     * @return person at index location
+     */
     public Person get(int index) {
         return persons.get(index);
     }
@@ -50,17 +63,29 @@ public class AddressBook extends AbstractTableModel {
         persons.clear();
     }
 
+    /**
+     * Gets the row count by persons arrayList size
+     * @return size of list
+     */
     @Override
     public int getRowCount() {
         return persons.size();
     }
 
-
+    /**
+     * gets column counts
+     * @return returns column count
+     */
     public int getColumnCount() {
         return Person.fields.length;
     }
 
-
+    /**
+     * Gets field value based on row and column index
+     * @param row
+     * @param column
+     * @return returns value of textField
+     */
     @Override
     public Object getValueAt(int row, int column) {
         /*try {
@@ -71,7 +96,11 @@ public class AddressBook extends AbstractTableModel {
         return persons.get(row).getField(column);
     }
 
-
+    /**
+     * Gets name of column based on Person field names with the column as index
+     * @param column
+     * @return name of field
+     */
     @Override
     public String getColumnName(int column) {
         return Person.fields[column];
