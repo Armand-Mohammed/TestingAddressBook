@@ -223,7 +223,7 @@ public class AddressBookGUITest {
         // Test person is added
         ourFrame.table().requireRowCount(0);
 
-        dialog.button(JButtonMatcher.withText("OK")).click();
+       //  dialog.button(JButtonMatcher.withText("OK")).click();
     }
 
     @Test
@@ -263,7 +263,7 @@ public class AddressBookGUITest {
 
         // Test person is added
         ourFrame.table().requireRowCount(0);
-        dialog.button(JButtonMatcher.withText("OK")).click();
+       // dialog.button(JButtonMatcher.withText("OK")).click();
     }
 
     @Test
@@ -303,7 +303,7 @@ public class AddressBookGUITest {
 
         // Test person is added
         ourFrame.table().requireRowCount(0);
-        dialog.button(JButtonMatcher.withText("OK")).click();
+       // dialog.button(JButtonMatcher.withText("OK")).click();
     }
 
     @Test
@@ -523,7 +523,7 @@ public class AddressBookGUITest {
 
         // Create a blank file
         File fakeFile = tempFolder.newFile("myOtherfakeFile");
-        fakeFile.createNewFile();
+        fakeFile. createNewFile();
 
         // Get the file chooser and select the file saved
         ourFrame.fileChooser().selectFile(fakeFile.getAbsoluteFile());

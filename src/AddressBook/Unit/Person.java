@@ -57,16 +57,10 @@ public class Person {
                 throw new IllegalArgumentException("State cannot be empty");
             }
 
-            if (zip.equals(null)) {
-                throw new NullPointerException("Zip can't be null");
-            }
             if(zip.isEmpty()) {
                 throw new IllegalArgumentException("Zip cannot be empty");
             }
 
-            if (phone.equals(null)) {
-                throw new NullPointerException("phone can't be null");
-            }
             if(phone.isEmpty()) {
                 throw new IllegalArgumentException("Phone cannot be empty");
             }

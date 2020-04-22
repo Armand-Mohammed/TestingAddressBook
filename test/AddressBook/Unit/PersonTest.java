@@ -200,7 +200,7 @@ class PersonTest {
     }
     @Test
     void personZipEmptyTest(){
-        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","","my address","fort myers", "FL","","9876543210"));
+        assertThrows(IllegalArgumentException.class, () -> new Person("Ben","Fulker","my address","fort myers", "FL","","9876543210"));
     }
     @Test
     void personZipNullTest(){
