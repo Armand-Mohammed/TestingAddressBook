@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Author: by Ben Fulker and Armand Mohammed
- * Class has dependencies on AddressBook.java and Person.jav
+ * Class has dependencies on AddressBook.java and Person.java
  */
 class AddressBookTest {
 
